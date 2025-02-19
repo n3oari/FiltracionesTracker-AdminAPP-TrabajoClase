@@ -2,27 +2,18 @@ package t8_practica_filtraciones;
 
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.io.File;
-import java.sql.Connection;
-import java.sql.DriverManager;
-import java.sql.SQLException;
 import javax.swing.table.DefaultTableModel;
 
 //CLASE SUPER QUE DE ELLA HEREDARAN USERSGUI Y ADMINSGUI
 public class GUI extends JFrame {
 
     protected JPanel layout;
-    protected Image img;
-
     protected JLabel imgL;
-    protected JLabel i;
-
-    protected ImageIcon imgg;
-    protected ImageIcon imgg2;
-
     protected JButton exit;
+    protected ImageIcon imgg;
+    protected Image img;
+    //TABLA
     protected JTable table;
     protected DefaultTableModel model;
     protected JScrollPane scroll;
@@ -47,7 +38,6 @@ public class GUI extends JFrame {
                 if (imgg != null) {
                     g.drawImage(imgg.getImage(), 0, 0, getWidth(), getHeight(), this);
                 }
-
             }
         };
 
@@ -56,7 +46,6 @@ public class GUI extends JFrame {
         this.add(layout);
 
         File f = new File("img/ww.png");
-
         imgg = new ImageIcon(f.getAbsolutePath());
 
         //BOTON CERRAR
@@ -64,37 +53,35 @@ public class GUI extends JFrame {
         exit.setBounds(545, 375, 200, 50);
         exit.setBackground(Color.black);
         exit.setForeground(Color.red);
-
         exit.addActionListener(e -> System.exit(0));
         layout.add(exit);
-
         //HEADER
         header = new String[]{
             "id_filtracion", "plataforma", "fecha", "nº afectados",
-            "descripcion", "medidas"
+            "descripción", "medidas"
         };
-
         data = new Object[0][6];
-
         model = new DefaultTableModel(data, header);
 
         table = new JTable(model);
-        table.setBackground(Color.blue);
-        table.getGridColor();
-        table.setGridColor(Color.black);
+        table.setBackground(Color.black);
+        table.setForeground(Color.white);
+        
+     //   table.getGridColor();
+        table.setGridColor(Color.green);
+        
         table.setEnabled(true); //desactiova editar las celdas
         table.getTableHeader().setReorderingAllowed(false); //desactiva poder mover las columnas
-        //  layout.add(table);
-
         //SCROLL
         scroll = new JScrollPane(table);
-
         scroll.setBounds(0, 200, 780, 400);
-        scroll.setBackground(Color.BLUE);
+        
+        scroll.setForeground(Color.yellow);
 
         this.setVisible(true);
     }
-
+    
+      
     public static void main(String[] args) {
 
         new GUI();

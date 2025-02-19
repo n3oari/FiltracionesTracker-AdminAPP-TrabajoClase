@@ -13,7 +13,7 @@ public class UsersGUI extends GUI implements ActionListener {
 
     private JButton accederComoAdministrador;
     private JButton inputCredenciales;
-    private String message = "";
+   
 
     public UsersGUI() {
 
@@ -35,15 +35,14 @@ public class UsersGUI extends GUI implements ActionListener {
         inputCredenciales.setBackground(Color.BLACK);
         inputCredenciales.setForeground(Color.red);
         layout.add(inputCredenciales);
-
-        //METODOS
     }
 
     @Override
     public void actionPerformed(ActionEvent e) {
+        
+        String message = "";
 
         if (e.getSource() == accederComoAdministrador) {
-            System.out.println("boton pulsado");
 
             String usuarioAdmin = JOptionPane.showInputDialog("Introduce usuario");
             String contraseñaAdmin = JOptionPane.showInputDialog("Introduce contraseña");
@@ -51,10 +50,9 @@ public class UsersGUI extends GUI implements ActionListener {
             try {
                 Connection con = MetodosToSql.establecerConexion();
 
-                String queryComprobarAdmin = "SELECT usuario FROM CREDENCIALES WHERE usuario = " + usuarioAdmin + " AND contraseña = " + contraseñaAdmin;
-                String q = "SELECT usuario, contraseña FROM ADMINISTRADORES WHERE usuario = ? AND contraseña = ?";
+                String queryCheck = "SELECT usuario, contraseña FROM ADMINISTRADORES WHERE usuario = ? AND contraseña = ?";
 
-                PreparedStatement pre = con.prepareStatement(q);
+                PreparedStatement pre = con.prepareStatement(queryCheck);
 
                 pre.setString(1, usuarioAdmin);
                 pre.setString(2, contraseñaAdmin);
@@ -62,7 +60,7 @@ public class UsersGUI extends GUI implements ActionListener {
                 ResultSet rs = pre.executeQuery();
 
                 if (rs.next()) {
-                    JOptionPane.showMessageDialog(null, "[+]Adminitrador verficado exitosamente");
+                    JOptionPane.showMessageDialog(null, "[+]Adminitrador verficado exitosamente ");
                     JOptionPane.showMessageDialog(null, ".........entrando como administrador");
 
                     new AdministradoresGUI();
@@ -81,7 +79,7 @@ public class UsersGUI extends GUI implements ActionListener {
         if (e.getSource() == inputCredenciales) {
 
             Scroll scroll = new Scroll();
-
+            boolean credencialEncontrada = false;
             try {
                 Connection con = MetodosToSql.establecerConexion();
 
@@ -101,7 +99,6 @@ public class UsersGUI extends GUI implements ActionListener {
 
                         ResultSet rs = pre.executeQuery();
 
-                        boolean credencialEncontrada = false;
                         while (rs.next()) {
 
                             String usuario = rs.getString("usuario");
@@ -110,18 +107,16 @@ public class UsersGUI extends GUI implements ActionListener {
 
                             message += "\n[*]Usuario -> " + usuario + "\n[*]Plataforma -> " + plata + "\n[*]Fecha -> " + fecha + "\n";
 
-                        //    scroll.setMessage(message);
-                            credencialEncontrada = true;
-
                         }
-                          scroll.setMessage(message);
+                        scroll.setMessage(message);
 
                         if (!credencialEncontrada) {
-                            JOptionPane.showMessageDialog(null, "Tus credenciales no han sido comprometidas");
+                            JOptionPane.showMessageDialog(null, "Tus credenciales no han sido comprometidas ✔");
 
                         } else {
 
-                            JOptionPane.showMessageDialog(null, scroll.getJScrollPane(), "Credenciales comprometidas, toma las medidas necesarias ", JOptionPane.WARNING_MESSAGE);
+                            JOptionPane.showMessageDialog(null, scroll.getJScrollPane(), "Credenciales comprometidas ⚠ ⚠   ", JOptionPane.WARNING_MESSAGE);
+                            credencialEncontrada = true;
 
                         }
                         break;
@@ -134,16 +129,14 @@ public class UsersGUI extends GUI implements ActionListener {
                         pre2.setString(1, contraseña);
 
                         ResultSet rs2 = pre2.executeQuery();
-
                         while (rs2.next()) {
 
                             String usuario = rs2.getString("usuario");
                             String plata = rs2.getString("plataforma");
                             String fecha = rs2.getString("fecha");
 
-                            //     message+= 
                             JOptionPane.showMessageDialog(null,
-                                    "!!!!!!!!Tus credenciales han sido comprometidas!!!!!!!!"
+                                    "!!!!!!!!Tus credenciales han sido comprometidas⚠⚠⚠⚠⚠⚠⚠!!!!!!!!"
                                     + "\n[*]Usuario -> " + usuario + "\n[*]Plataforma -> " + plata + "\n[*]Fecha -> " + fecha);
 
                         }

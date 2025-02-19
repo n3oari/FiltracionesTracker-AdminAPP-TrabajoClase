@@ -6,20 +6,20 @@ import java.awt.event.*;
 import java.io.IOException;
 import java.sql.*;
 import java.util.ArrayList;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
 
 public class AdministradoresGUI extends GUI implements ActionListener {
 
-    private JButton insert;
-    private JButton query;
-    private JButton actualizar;
-    private JButton delete;
-    private JButton limpiar;
-    private JButton modificar;
-    protected Connection con;
+    final private JButton INSERT;
+    final private JButton QUERY;
+    final private JButton UPDATE;
+    final private JButton DELETE;
+    final private JButton CLEAN;
+    final private JButton MODIFY;
 
-    //TABLE
     public AdministradoresGUI() {
 
         super();
@@ -28,64 +28,69 @@ public class AdministradoresGUI extends GUI implements ActionListener {
 
         this.setSize(780, 450);
 
-        layout.setBackground(Color.blue);
-        insert = new JButton("Añadir filtración ");
-        insert.setBounds(0, 0, 130, 50);
-        insert.addActionListener(this);
-        insert.setBackground(Color.black);
-        insert.setForeground(Color.blue);
-        layout.add(insert);
+        layout.setBackground(Color.GREEN);
 
-        query = new JButton("Query");
-        query.setBounds(130, 0, 130, 50);
-        query.addActionListener(this);
-        query.setBackground(Color.black);
-        query.setForeground(Color.blue);
-        layout.add(query);
-
-        actualizar = new JButton("Actualizar");
-        actualizar.setBounds(260, 0, 130, 50);
-        actualizar.setBackground(Color.black);
-        actualizar.setForeground(Color.blue);
-        actualizar.addActionListener(this);
-        layout.add(actualizar);
-
-        delete = new JButton("Borrar");
-        delete.setBounds(390, 0, 130, 50);
-        delete.setBackground(Color.black);
-        delete.setForeground(Color.blue);
-        delete.addActionListener(this);
-        layout.add(delete);
-
-        limpiar = new JButton("Limpiar");
-        limpiar.setBounds(520, 0, 130, 50);
-        limpiar.setBackground(Color.black);
-        limpiar.setForeground(Color.blue);
-        limpiar.addActionListener(e -> model.setRowCount(0));
-        layout.add(limpiar);
-
-        modificar = new JButton("Modificar");
-        modificar.setBounds(650, 0, 130, 50);
-        modificar.setBackground(Color.black);
-        modificar.setForeground(Color.blue);
-        //  actualizar.addActionListener(e -> MetodosToSql.updateQuery());
-        modificar.addActionListener(this);
-        layout.add(modificar);
-
+        //BOTON AÑADIR FILTRACION
+        INSERT = new JButton("Añadir filtración ");
+        INSERT.setBounds(0, 0, 130, 50);
+        INSERT.addActionListener(this);
+        INSERT.setBackground(Color.black);
+        INSERT.setForeground(Color.blue);
+        layout.add(INSERT);
+        //BOTON REALIZAR QUERY
+        QUERY = new JButton("Query");
+        QUERY.setBounds(130, 0, 130, 50);
+        QUERY.addActionListener(this);
+        QUERY.setBackground(Color.black);
+        QUERY.setForeground(Color.blue);
+        layout.add(QUERY);
+        //BOTON ACTUALIZAR
+        UPDATE = new JButton("Actualizar");
+        UPDATE.setBounds(260, 0, 130, 50);
+        UPDATE.setBackground(Color.black);
+        UPDATE.setForeground(Color.blue);
+        UPDATE.addActionListener(this);
+        layout.add(UPDATE);
+        //BOTON BORRAR
+        DELETE = new JButton("Borrar");
+        DELETE.setBounds(390, 0, 130, 50);
+        DELETE.setBackground(Color.black);
+        DELETE.setForeground(Color.blue);
+        DELETE.addActionListener(this);
+        layout.add(DELETE);
+        //BOTON LIMPIAR
+        CLEAN = new JButton("Limpiar");
+        CLEAN.setBounds(520, 0, 130, 50);
+        CLEAN.setBackground(Color.black);
+        CLEAN.setForeground(Color.blue);
+        CLEAN.addActionListener(e -> model.setRowCount(0));
+        layout.add(CLEAN);
+        //BOTON MODIFICAR
+        MODIFY = new JButton("Modificar");
+        MODIFY.setBounds(650, 0, 130, 50);
+        MODIFY.setBackground(Color.black);
+        MODIFY.setForeground(Color.blue);
+        MODIFY.addActionListener(this);
+        MODIFY.addActionListener(e -> {
+            try {
+                MetodosToSql.modifyQuery();
+            } catch (SQLException ex) {
+                ex.printStackTrace();
+            }
+        });
+        layout.add(MODIFY);
     }
 
     @Override
-
     public void actionPerformed(ActionEvent e) {
 
-        Scroll scroll = new Scroll();
+        Scroll scroll = new Scroll(); //intanciar clase scroll para crear joptionpane de gran tamaño
 
-        //LLAMADA AL METODO PARA CREAR CONEXION
-        if (e.getSource() == insert) {
+        if (e.getSource() == INSERT) {
 
             try {
-                Connection con = MetodosToSql.establecerConexion();
-                MetodosToSql.añadirFiltracion(con, model);
+
+                MetodosToSql.añadirFiltracion(model);
             } catch (SQLException ex) {
                 ex.printStackTrace();
             } catch (IOException ex) {
@@ -93,12 +98,11 @@ public class AdministradoresGUI extends GUI implements ActionListener {
             }
         }
 
-        if (e.getSource() == query) {
+        if (e.getSource() == QUERY) {
 
-            System.out.println("boton pulsado");
             String queryInput = JOptionPane.showInputDialog("Introduce la query");
-
             PreparedStatement pre;
+
             try {
                 Connection con = MetodosToSql.establecerConexion();
                 pre = con.prepareStatement(queryInput);
@@ -120,13 +124,13 @@ public class AdministradoresGUI extends GUI implements ActionListener {
                 scroll.setMessage(message);
                 JOptionPane.showMessageDialog(null, scroll.getJScrollPane(), "Encontrados: " + contador, JOptionPane.INFORMATION_MESSAGE);
             } catch (SQLException e1) {
-                
+
                 System.out.println("[-] No se ha podido realizar la conexión");
                 e1.printStackTrace();
             }
         }
         //BOTON INSERTAR
-        if (e.getSource() == actualizar) {
+        if (e.getSource() == UPDATE) {
             System.out.println("Botón presionado");
 
             try {
@@ -172,8 +176,11 @@ public class AdministradoresGUI extends GUI implements ActionListener {
                         };
 
                         model.addRow(row);
+
                     }
+
                 }
+                JOptionPane.showMessageDialog(null, "Tabla actualizada ✔");
 
             } catch (SQLException e2) {
 
@@ -183,14 +190,14 @@ public class AdministradoresGUI extends GUI implements ActionListener {
             }
         }
 
-        if (e.getSource() == delete) {
+        if (e.getSource() == DELETE) {
             try {
                 Connection con = MetodosToSql.establecerConexion();
                 int selectedRow = table.getSelectedRow();
 
-                int option = JOptionPane.showConfirmDialog(null, "Seguro?", "Advertencia", JOptionPane.YES_NO_OPTION, JOptionPane.WARNING_MESSAGE);
+                int option = JOptionPane.showConfirmDialog(null, "Seguro?", "⚠⚠⚠Advertencia⚠⚠⚠", JOptionPane.YES_NO_OPTION, JOptionPane.WARNING_MESSAGE);
 
-                if (selectedRow != -1 && option == JOptionPane.YES_NO_OPTION) {
+                if (selectedRow != -1 && option == JOptionPane.YES_OPTION) {
 
                     //obtenemos el valor del id de la filtracion seleccionada
                     int idFiltracion = (int) table.getValueAt(selectedRow, 0);
@@ -203,12 +210,14 @@ public class AdministradoresGUI extends GUI implements ActionListener {
                         pre.executeUpdate();
 
                         model.removeRow(selectedRow);
-                        JOptionPane.showMessageDialog(null, "Filtración eliminada");
+                        JOptionPane.showMessageDialog(null, "Filtración eliminada✔✔✔✔");
 
                     } catch (SQLException exx) {
                         exx.printStackTrace();
                     }
 
+                } else if (selectedRow == -1) {
+                    JOptionPane.showInternalMessageDialog(null, "Selecciona una celda", "❌", JOptionPane.ERROR_MESSAGE);
                 }
 
             } catch (SQLException e7) {
@@ -216,21 +225,21 @@ public class AdministradoresGUI extends GUI implements ActionListener {
             }
 
         }
-        if (e.getSource() == modificar) {
-            System.out.println("ddddd");
-
+        /*
+        if (e.getSource() == MODIFY) {
+           
             try {
-                Connection con = MetodosToSql.establecerConexion();
-                System.out.println("lsdl");
-                MetodosToSql.updateQuery();
+
+                MetodosToSql.modifyQuery();
 
             } catch (SQLException e4) {
                 e4.printStackTrace();
             }
 
         }
-
+*/
     }
+
     //metodo que devuelve el model (para usarlo en otras clases)
 
     public DefaultTableModel getModel() {

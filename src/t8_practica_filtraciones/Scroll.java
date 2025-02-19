@@ -1,42 +1,35 @@
-
 package t8_practica_filtraciones;
 
 import java.awt.Dimension;
 import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
 
-
 public class Scroll {
-    
-    
-    protected JTextArea areaT;
-    protected String messageArea;
-    protected JScrollPane scrollJ;
-    
-  
-    public Scroll(){
-        
-        areaT = new JTextArea(40,10);
-        areaT.setEditable(false);
-        areaT.setWrapStyleWord(true);
-        areaT.setLineWrap(true);
-        
-        scrollJ = new JScrollPane(areaT);
-        scrollJ.setPreferredSize(new Dimension(200,200));
-                
-        
+
+    final private JTextArea TEXTAREA;
+    final private JScrollPane JSCROLL;
+    private String messageArea;
+
+    public Scroll() {
+
+        TEXTAREA = new JTextArea(40, 10);
+        TEXTAREA.setEditable(false);
+        TEXTAREA.setWrapStyleWord(true);
+        TEXTAREA.setLineWrap(true);
+
+        JSCROLL = new JScrollPane(TEXTAREA);
+        JSCROLL.setPreferredSize(new Dimension(200, 200));
+
         messageArea = "";
-        areaT.setText(messageArea);
+        TEXTAREA.setText(messageArea);
     }
-    
-    public void setMessage(String message){
+
+    public void setMessage(String message) {
         messageArea = message;
-        areaT.setText(messageArea);
+        TEXTAREA.setText(messageArea);
     }
     
-    public JScrollPane getJScrollPane(){
-        return scrollJ;
+    public JScrollPane getJScrollPane() {
+        return JSCROLL;
     }
 }
-
-
