@@ -5,25 +5,36 @@ import java.sql.*;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.LinkedList;
-import java.util.Scanner;
 import javax.swing.JOptionPane;
+import javax.swing.JScrollPane;
 import javax.swing.table.DefaultTableModel;
 
 public class MetodosToSql {
 
-    private static Scanner sc = new Scanner(System.in);
     private static int afectados;
+    private static int idAdmin = -1;
 
-    /*------------METODOS INDEX-------------------------------
+    /*---------------------METODOS INDEX----------------------
+    0 - SETTETS Y GETTERS ID ADMIN
     1 - CREAR CONEXION
     2 - GENEAR NUMEROS DE TELEFONO
     3 - LEER DICCIONARIOS(ARCHIVOS) Y METERLOS EN LINKEDLINKS
     4 - AÑADIR FILTRACION A LA BD -> LLAMA AL 5
     5-  AÑADIR USUARIOS A LA BD
     6 - CUENTA LA CANTIDAD DE  LINEAS DE UN FILE 
-    7 - QUERY PARA MODIFICAR TABLE + BD
+    7 - GUARDAR ID ADMIN QUE SE LOGUEA 
+    8 - QUERY PARA MODIFICAR TABLE + BD (USA EL ID DEL METODO 7)
     ----------------------------------------------------------
      */
+    //0 SETTERS Y GETTERS ID ADMIN
+    public static void setIdAdmin(int id) {
+        idAdmin = id;
+    }
+
+    public static int getIdAdmin() {
+        return idAdmin;
+    }
+
     // 1 -> METODO CREAR UNA CONEXION
     public static Connection establecerConexion() throws SQLException {
 
@@ -77,9 +88,10 @@ public class MetodosToSql {
     }
 
     // 4 -> METODO QUE AÑADE UNA FILTRACION A LA TABLE + BD
-    public static void añadirFiltracion(DefaultTableModel model) throws SQLException, IOException {
+    public static void añadirFiltracion() throws SQLException, IOException {
 
-        Connection con = MetodosToSql.establecerConexion();
+        DefaultTableModel model = AdministradoresGUI.getModel();
+
         String queryFiltraciones = "INSERT INTO FILTRACIONES (id_filtracion, plataforma, fecha, numero_afectados, descripcion, medidas) VALUES (?,?,?,?,?,?)";
         PreparedStatement preparedFiltraciones = establecerConexion().prepareStatement(queryFiltraciones, Statement.RETURN_GENERATED_KEYS);
 
@@ -116,15 +128,14 @@ public class MetodosToSql {
         //AL FINALIZAR DE INSERTAR LA FILTRACION, SE LLAMA AL METODO AÑADIRUSUARIOS
         //PARA AÑADIR LAS CREDENCIALES A LA FILTRACION
         //PASANDOLE ID DE LA FILTRACION QUE HEMOS AÑADIDO, EL NUMERO DE AFECTADOS, Y LA TABLEMODEL
-        MetodosToSql.añadirUsuarios(id, afectados, model);
+        MetodosToSql.añadirUsuarios(id, afectados);
 
     }
 
     // 5 -> METODO PARA CREAR USUARIOS E INSERTARLOS A LA BASE DE DATOS CON UNA QUERY
-    public static void añadirUsuarios(int idGenerado, int afectados, DefaultTableModel model) throws SQLException {
+    public static void añadirUsuarios(int idGenerado, int afectados) throws SQLException {
 
-        Scroll scroll = new Scroll();
-        String message = "";
+     
         String rutaUsers = JOptionPane.showInputDialog("Introduce ruta diccionario usuarios");
         String rutaPass = JOptionPane.showInputDialog("Introduce ruta diccionario contraseñas");
         String rutaEmails = JOptionPane.showInputDialog("Introduce ruta diccionario emails");
@@ -172,15 +183,9 @@ public class MetodosToSql {
 
             contador++;
 
-            message += "[" + contador + "] Usuario: " + users.get(i)
-                    + ", Correo: " + emails.get(i)
-                    + ", Contraseña: " + passwds.get(i)
-                    + ", Teléfono: " + numbersPhone.get(i);
-
         }
-        scroll.setMessage(message);
 
-        JOptionPane.showMessageDialog(null, contador + "" + message + " usuarios añadidos exitosamente", "Info", JOptionPane.INFORMATION_MESSAGE);
+        JOptionPane.showMessageDialog(null, contador + " usuarios añadidos exitosamente", "Info", JOptionPane.INFORMATION_MESSAGE);
         System.out.println("[+] Se han añadido los usuarios correctamente.");
     }
 
@@ -198,11 +203,53 @@ public class MetodosToSql {
         return contador;
     }
 
-    // 7 -> METODO PARA MODIFICAR LA TABLE + LA BD
-    public static void modifyQuery() throws SQLException {
+    // 7 -> METODO PARA OBTENER EL ID DEL ADMINISTRADOR AL LOGEARSE (Y USARLO EN OTROS METODOS / FUTURO)
+    public static int idAdminLogin() {
+
+        int idAdmin = -1;
+
+        String usuarioAdmin = JOptionPane.showInputDialog("Introduce usuario");
+        String contraseñaAdmin = JOptionPane.showInputDialog("Introduce contraseña");
 
         try {
-            Connection con = MetodosToSql.establecerConexion();
+            Connection con = establecerConexion();
+            String queryGetId = "SELECT id_administrador FROM administradores WHERE usuario =? AND contraseña =?";
+            PreparedStatement pre = con.prepareStatement(queryGetId);
+            pre.setString(1, usuarioAdmin);
+            pre.setString(2, contraseñaAdmin);
+
+            ResultSet rs = pre.executeQuery(); //obtenemos el id
+
+            if (rs.next()) {
+
+                JOptionPane.showMessageDialog(null, "[+]Adminitrador verficado exitosamente ");
+                JOptionPane.showMessageDialog(null, ".........entrando como administrador");
+                idAdmin = rs.getInt("id_administrador");
+                //  JOptionPane.showMessageDialog(null, "id admin generado " + idAdmin);
+                MetodosToSql.setIdAdmin(idAdmin);
+
+                
+                new AdministradoresGUI();
+                AdministradoresGUI.refreshBD(); //actualiza la tabla
+            } else {
+                JOptionPane.showMessageDialog(null, "....Usuario o contraseña incorrectos");
+            }
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return idAdmin;
+
+    }
+
+    // 8 -> METODO PARA MODIFICAR LA TABLE + LA BD
+    public static void modifyQuery() throws SQLException {
+
+        int idAdmin = MetodosToSql.getIdAdmin();
+        String cambios;
+
+        try {
+            Connection con = establecerConexion();
 
             int idInput = Integer.parseInt(JOptionPane.showInputDialog("Introduce el id de la filtración que deseas eliminar"));
             int opcion = Integer.parseInt(JOptionPane.showInputDialog(
@@ -212,48 +259,80 @@ public class MetodosToSql {
                     + "\n[3] modificar descripcion"
                     + "\n[4] modificar medidas"));
 
-            String query;
+            String queryUpdate;
+            String queryHistory = "INSERT INTO HISTORIAL (cambios, id_administrador) VALUES (?, ?);";
             PreparedStatement pre = null;
             switch (opcion) {
                 case 1:
                     String nuevaPlataforma = JOptionPane.showInputDialog("Introduce nueva plataforma");
-                    query = "UPDATE FILTRACIONES SET plataforma = ?  WHERE id_filtracion = ?";
-                    pre = con.prepareStatement(query);
+                    queryUpdate = "UPDATE FILTRACIONES SET plataforma = ?  WHERE id_filtracion = ?";
+                    pre = con.prepareStatement(queryUpdate);
                     pre.setString(1, nuevaPlataforma);
                     pre.setInt(2, idInput);
                     pre.executeUpdate();
+                    pre.close();
+                    cambios = JOptionPane.showInputDialog("Resume los cambios realizados");
+                    pre = con.prepareStatement(queryHistory);
+                    pre.setString(1, cambios);
+                    pre.setInt(2, idAdmin);
+                    pre.executeUpdate();
+                    JOptionPane.showMessageDialog(null, "[+] Cambios registrados ✔");
 
                     break;
                 case 2:
                     String nuevaFecha = JOptionPane.showInputDialog("Introduce nueva fecha");
-                    query = "UPDATE FILTRACIONES SET fecha =? WHERE id_filtracion =?";
-                    pre = con.prepareStatement(query);
+                    queryUpdate = "UPDATE FILTRACIONES SET fecha =? WHERE id_filtracion =?";
+                    pre = con.prepareStatement(queryUpdate);
                     pre.setString(1, nuevaFecha);
                     pre.setInt(2, idInput);
                     pre.executeUpdate();
 
+                    pre.close();
+                    cambios = JOptionPane.showInputDialog("Resume los cambios realizados");
+                    pre = con.prepareStatement(queryHistory);
+                    pre.setString(1, cambios);
+                    pre.setInt(2, idAdmin);
+                    pre.executeUpdate();
+                    JOptionPane.showMessageDialog(null, "[+] Cambios registrados ✔");
+
                     break;
                 case 3:
                     String nuevaDescripcion = JOptionPane.showInputDialog("Introduce nueva descripcion");
-                    query = "UPDATE FILTRACIONES SET descripcion =? WHERE id_filtracion =?";
-                    pre = con.prepareStatement(query);
+                    queryUpdate = "UPDATE FILTRACIONES SET descripcion =? WHERE id_filtracion =?";
+                    pre = con.prepareStatement(queryUpdate);
                     pre.setString(1, nuevaDescripcion);
                     pre.setInt(2, idInput);
                     pre.executeUpdate();
+
+                    pre.close();
+                    cambios = JOptionPane.showInputDialog("Resume los cambios realizados");
+                    pre = con.prepareStatement(queryHistory);
+                    pre.setString(1, cambios);
+                    pre.setInt(2, idAdmin);
+                    pre.executeUpdate();
+                    JOptionPane.showMessageDialog(null, "[+] Cambios registrados ✔");
                     break;
 
                 case 4:
                     String nuevaMedida = JOptionPane.showInputDialog("Introduce nueva medida");
-                    query = "UPDATE FILTRACIONES SET medidas =? WHERE id_filtracion =?";
-                    pre = con.prepareStatement(query);
+                    queryUpdate = "UPDATE FILTRACIONES SET medidas =? WHERE id_filtracion =?";
+                    pre = con.prepareStatement(queryUpdate);
                     pre.setString(1, nuevaMedida);
                     pre.setInt(2, idInput);
                     pre.executeUpdate();
+
+                    pre.close();
+                    cambios = JOptionPane.showInputDialog("Resume los cambios realizados");
+                    pre = con.prepareStatement(queryHistory);
+                    pre.setString(1, cambios);
+                    pre.setInt(2, idAdmin);
+                    pre.executeUpdate();
+                    JOptionPane.showMessageDialog(null, "[+] Cambios registrados ✔");
                     break;
                 default:
-                    
-                    JOptionPane.showMessageDialog(null, "Introduce un valor valido","Warning",JOptionPane.WARNING_MESSAGE);
-               
+
+                    JOptionPane.showMessageDialog(null, "Introduce un valor valido", "Warning", JOptionPane.WARNING_MESSAGE);
+
                     break;
             }
             JOptionPane.showMessageDialog(null, "[+]........Modificación realizada con exito");
@@ -262,7 +341,4 @@ public class MetodosToSql {
         }
     }
 
-    public static void main(String[] args) throws SQLException {
-        MetodosToSql.establecerConexion();
-    }
 }

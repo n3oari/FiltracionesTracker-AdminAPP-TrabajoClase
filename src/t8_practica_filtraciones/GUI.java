@@ -10,15 +10,10 @@ public class GUI extends JFrame {
 
     protected JPanel layout;
     protected JLabel imgL;
-    protected JButton exit;
     protected ImageIcon imgg;
     protected Image img;
     //TABLA
-    protected JTable table;
-    protected DefaultTableModel model;
-    protected JScrollPane scroll;
-    protected String[] header;
-    protected Object[][] data;
+ 
 
     public GUI() {
 
@@ -49,37 +44,19 @@ public class GUI extends JFrame {
         imgg = new ImageIcon(f.getAbsolutePath());
 
         //BOTON CERRAR
-        JButton exit = new JButton("Salir");
-        exit.setBounds(545, 375, 200, 50);
-        exit.setBackground(Color.black);
-        exit.setForeground(Color.red);
-        exit.addActionListener(e -> System.exit(0));
-        layout.add(exit);
-        //HEADER
-        header = new String[]{
-            "id_filtracion", "plataforma", "fecha", "nº afectados",
-            "descripción", "medidas"
-        };
-        data = new Object[0][6];
-        model = new DefaultTableModel(data, header);
-
-        table = new JTable(model);
-        table.setBackground(Color.black);
-        table.setForeground(Color.white);
+        JButton SALIR = new JButton("Salir");
         
-     //   table.getGridColor();
-        table.setGridColor(Color.green);
-        
-        table.setEnabled(true); //desactiova editar las celdas
-        table.getTableHeader().setReorderingAllowed(false); //desactiva poder mover las columnas
-        //SCROLL
-        scroll = new JScrollPane(table);
-        scroll.setBounds(0, 200, 780, 400);
-        
-        scroll.setForeground(Color.yellow);
+       
 
         this.setVisible(true);
+        
+        
     }
+    
+    
+    //METODO PARA USAR LA TABLA EN OTRAS CLASES
+   
+    
     
       
     public static void main(String[] args) {

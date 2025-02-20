@@ -11,8 +11,9 @@ import javax.swing.JOptionPane;
 
 public class UsersGUI extends GUI implements ActionListener {
 
-    private JButton accederComoAdministrador;
-    private JButton inputCredenciales;
+    final private JButton ACCEDERCOMOADMIN;
+    final private JButton INPUTCREDENCIALES;
+    final private JButton EXIT;
    
 
     public UsersGUI() {
@@ -22,19 +23,27 @@ public class UsersGUI extends GUI implements ActionListener {
         this.setTitle("GUI USUARIO ¯\\_( ͡° ͜ʖ ͡°)_/¯¯\\_( ͡° ͜ʖ ͡°)_/¯¯\\_( ͡° ͜ʖ ͡°)_/¯¯\\_( ͡° ͜ʖ ͡°)_/¯¯\\_( ͡° ͜ʖ ͡°)_/¯¯\\_( ͡° ͜ʖ ͡°)_/¯"
                 + "¯\\_( ͡° ͜ʖ ͡°)_/¯¯\\_( ͡° ͜ʖ ͡°)_/¯¯\\_( ͡° ͜ʖ ͡°)_/¯¯\\_( ͡° ͜ʖ ͡°)_/¯¯\\_( ͡° ͜ʖ ͡°)_/¯¯\\_( ͡° ͜ʖ ͡°)_/¯¯\\_( ͡° ͜ʖ ͡°)_/¯");
 
-        accederComoAdministrador = new JButton("Acceso admin");
-        accederComoAdministrador.setBounds(270, 375, 200, 50);
-        accederComoAdministrador.addActionListener(this);
-        accederComoAdministrador.setBackground(Color.BLACK);
-        accederComoAdministrador.setForeground(Color.red);
-        layout.add(accederComoAdministrador);
+        ACCEDERCOMOADMIN = new JButton("Acceso admin");
+        ACCEDERCOMOADMIN.setBounds(270, 375, 200, 50);
+        ACCEDERCOMOADMIN.addActionListener(e -> MetodosToSql.idAdminLogin());
+        ACCEDERCOMOADMIN.setBackground(Color.BLACK);
+        ACCEDERCOMOADMIN.setForeground(Color.red);
+        layout.add(ACCEDERCOMOADMIN);
 
-        inputCredenciales = new JButton("Buscar credenciales");
-        inputCredenciales.setBounds(0, 375, 200, 50);
-        inputCredenciales.addActionListener(this);
-        inputCredenciales.setBackground(Color.BLACK);
-        inputCredenciales.setForeground(Color.red);
-        layout.add(inputCredenciales);
+        INPUTCREDENCIALES = new JButton("Buscar credenciales");
+        INPUTCREDENCIALES.setBounds(0, 375, 200, 50);
+        INPUTCREDENCIALES.addActionListener(this);
+        INPUTCREDENCIALES.setBackground(Color.BLACK);
+        INPUTCREDENCIALES.setForeground(Color.red);
+        layout.add(INPUTCREDENCIALES);
+        
+        EXIT = new JButton("Salir");
+        EXIT.setBounds(545, 375, 200, 50);
+        EXIT.setBackground(Color.black);
+        EXIT.setForeground(Color.RED);
+        EXIT.addActionListener(e -> System.exit(0));
+
+        layout.add(EXIT);
     }
 
     @Override
@@ -42,41 +51,10 @@ public class UsersGUI extends GUI implements ActionListener {
         
         String message = "";
 
-        if (e.getSource() == accederComoAdministrador) {
+  
+        
 
-            String usuarioAdmin = JOptionPane.showInputDialog("Introduce usuario");
-            String contraseñaAdmin = JOptionPane.showInputDialog("Introduce contraseña");
-
-            try {
-                Connection con = MetodosToSql.establecerConexion();
-
-                String queryCheck = "SELECT usuario, contraseña FROM ADMINISTRADORES WHERE usuario = ? AND contraseña = ?";
-
-                PreparedStatement pre = con.prepareStatement(queryCheck);
-
-                pre.setString(1, usuarioAdmin);
-                pre.setString(2, contraseñaAdmin);
-
-                ResultSet rs = pre.executeQuery();
-
-                if (rs.next()) {
-                    JOptionPane.showMessageDialog(null, "[+]Adminitrador verficado exitosamente ");
-                    JOptionPane.showMessageDialog(null, ".........entrando como administrador");
-
-                    new AdministradoresGUI();
-
-                } else {
-                    JOptionPane.showMessageDialog(null, "....Usuario o contraseña incorrectos");
-                }
-
-            } catch (SQLException ex) {
-                ex.printStackTrace();
-
-            }
-
-        }
-
-        if (e.getSource() == inputCredenciales) {
+        if (e.getSource() == INPUTCREDENCIALES) {
 
             Scroll scroll = new Scroll();
             boolean credencialEncontrada = false;
@@ -91,7 +69,7 @@ public class UsersGUI extends GUI implements ActionListener {
                 switch (opcion) {
                     case 1:
                         String correo = JOptionPane.showInputDialog("Introduce correo");
-                        String queryCorreo = "SELECT c.usuario, f.plataforma,f.fecha FROM CREDENCIALES c "
+                        String queryCorreo = "SELECT DISTINCT f.plataforma,f.fecha FROM CREDENCIALES c "
                                 + "JOIN filtraciones f ON c.id_filtracion = f.id_filtracion "
                                 + "WHERE correo = ?";
                         PreparedStatement pre = con.prepareStatement(queryCorreo);
@@ -101,11 +79,12 @@ public class UsersGUI extends GUI implements ActionListener {
 
                         while (rs.next()) {
 
-                            String usuario = rs.getString("usuario");
+                            credencialEncontrada = true;
                             String plata = rs.getString("plataforma");
-                            String fecha = rs.getString("fecha");
+                            Date fecha = rs.getDate("fecha");
 
-                            message += "\n[*]Usuario -> " + usuario + "\n[*]Plataforma -> " + plata + "\n[*]Fecha -> " + fecha + "\n";
+                            
+                            message += " \n[*]Plataforma -> " + plata + "\n[*]Fecha -> " + fecha + "\n-------------" ;
 
                         }
                         scroll.setMessage(message);
@@ -122,7 +101,7 @@ public class UsersGUI extends GUI implements ActionListener {
                         break;
                     case 2:
                         String contraseña = JOptionPane.showInputDialog("Introduce contraseña");
-                        String queryContraseña = "SELECT c.usuario, f.plataforma,f.fecha FROM CREDENCIALES c "
+                        String queryContraseña = "SELECT  DISTINCT f.plataforma,f.fecha FROM CREDENCIALES c "
                                 + "JOIN filtraciones f ON c.id_filtracion = f.id_filtracion "
                                 + "WHERE contraseña = ?";
                         PreparedStatement pre2 = con.prepareStatement(queryContraseña);
@@ -131,13 +110,13 @@ public class UsersGUI extends GUI implements ActionListener {
                         ResultSet rs2 = pre2.executeQuery();
                         while (rs2.next()) {
 
-                            String usuario = rs2.getString("usuario");
+                            
                             String plata = rs2.getString("plataforma");
                             String fecha = rs2.getString("fecha");
 
                             JOptionPane.showMessageDialog(null,
                                     "!!!!!!!!Tus credenciales han sido comprometidas⚠⚠⚠⚠⚠⚠⚠!!!!!!!!"
-                                    + "\n[*]Usuario -> " + usuario + "\n[*]Plataforma -> " + plata + "\n[*]Fecha -> " + fecha);
+                                    + "0\n[*]Plataforma -> " + plata + "\n[*]Fecha -> " + fecha);
 
                         }
                         break;
@@ -151,8 +130,8 @@ public class UsersGUI extends GUI implements ActionListener {
             }
 
         }
-    }
-
+        }
+    
     public static void main(String[] args) {
 
         new UsersGUI();

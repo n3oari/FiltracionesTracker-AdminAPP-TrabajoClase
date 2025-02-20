@@ -12,7 +12,7 @@ public class Scroll {
 
     public Scroll() {
 
-        TEXTAREA = new JTextArea(40, 10);
+        TEXTAREA = new JTextArea(50, 20);
         TEXTAREA.setEditable(false);
         TEXTAREA.setWrapStyleWord(true);
         TEXTAREA.setLineWrap(true);

@@ -1,13 +1,11 @@
 package t8_practica_filtraciones;
 
 import java.awt.*;
-
 import java.awt.event.*;
 import java.io.IOException;
 import java.sql.*;
 import java.util.ArrayList;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
 
@@ -19,12 +17,19 @@ public class AdministradoresGUI extends GUI implements ActionListener {
     final private JButton DELETE;
     final private JButton CLEAN;
     final private JButton MODIFY;
+    final private JButton HISTORY;
+    final private JButton EXIT;
+    //TABLA
+    protected JTable table;
+    protected static DefaultTableModel model;
+    protected JScrollPane scroll;
+    protected String[] header;
+    protected Object[][] data;
 
     public AdministradoresGUI() {
 
         super();
         this.setTitle("ADMINISTRADORES ｡◕‿‿◕｡ 🗲｡◕‿‿◕｡ 🗲｡◕‿‿◕｡ 🗲｡◕‿‿◕｡ 🗲｡◕‿‿◕｡ 🗲｡◕‿‿◕｡ 🗲｡◕‿‿◕｡ 🗲｡◕‿‿◕｡ 🗲｡◕‿‿◕｡ 🗲｡◕‿‿◕🗲｡◕‿‿◕🗲｡◕‿‿◕🗲｡◕‿‿◕🗲｡◕‿‿◕🗲｡◕‿‿◕ ");
-        layout.add(scroll);
 
         this.setSize(780, 450);
 
@@ -32,44 +37,54 @@ public class AdministradoresGUI extends GUI implements ActionListener {
 
         //BOTON AÑADIR FILTRACION
         INSERT = new JButton("Añadir filtración ");
-        INSERT.setBounds(0, 0, 130, 50);
-        INSERT.addActionListener(this);
+        INSERT.setBounds(0, 0, 130, 40);
+        INSERT.addActionListener(e -> {
+
+            try {
+                MetodosToSql.añadirFiltracion();
+            } catch (SQLException ex) {
+                ex.printStackTrace();
+            } catch (IOException ex) {
+                ex.printStackTrace();
+            }
+
+        });
         INSERT.setBackground(Color.black);
-        INSERT.setForeground(Color.blue);
+        INSERT.setForeground(Color.green);
         layout.add(INSERT);
         //BOTON REALIZAR QUERY
-        QUERY = new JButton("Query");
-        QUERY.setBounds(130, 0, 130, 50);
+        QUERY = new JButton("Consulta SQL");
+        QUERY.setBounds(130, 0, 130, 40);
         QUERY.addActionListener(this);
         QUERY.setBackground(Color.black);
-        QUERY.setForeground(Color.blue);
+        QUERY.setForeground(Color.green);
         layout.add(QUERY);
         //BOTON ACTUALIZAR
-        UPDATE = new JButton("Actualizar");
-        UPDATE.setBounds(260, 0, 130, 50);
+        UPDATE = new JButton("Refresh");
+        UPDATE.setBounds(260, 0, 130, 40);
         UPDATE.setBackground(Color.black);
-        UPDATE.setForeground(Color.blue);
+        UPDATE.setForeground(Color.green);
         UPDATE.addActionListener(this);
         layout.add(UPDATE);
         //BOTON BORRAR
         DELETE = new JButton("Borrar");
-        DELETE.setBounds(390, 0, 130, 50);
+        DELETE.setBounds(390, 0, 130, 40);
         DELETE.setBackground(Color.black);
-        DELETE.setForeground(Color.blue);
+        DELETE.setForeground(Color.green);
         DELETE.addActionListener(this);
         layout.add(DELETE);
         //BOTON LIMPIAR
         CLEAN = new JButton("Limpiar");
-        CLEAN.setBounds(520, 0, 130, 50);
+        CLEAN.setBounds(520, 0, 130, 40);
         CLEAN.setBackground(Color.black);
-        CLEAN.setForeground(Color.blue);
+        CLEAN.setForeground(Color.green);
         CLEAN.addActionListener(e -> model.setRowCount(0));
         layout.add(CLEAN);
         //BOTON MODIFICAR
         MODIFY = new JButton("Modificar");
-        MODIFY.setBounds(650, 0, 130, 50);
+        MODIFY.setBounds(650, 0, 130, 40);
         MODIFY.setBackground(Color.black);
-        MODIFY.setForeground(Color.blue);
+        MODIFY.setForeground(Color.green);
         MODIFY.addActionListener(this);
         MODIFY.addActionListener(e -> {
             try {
@@ -79,24 +94,54 @@ public class AdministradoresGUI extends GUI implements ActionListener {
             }
         });
         layout.add(MODIFY);
+
+        //BOTON HISTORIAL
+        HISTORY = new JButton("Historial");
+        HISTORY.setBounds(0, 210, 130, 40);
+        HISTORY.setBackground(Color.black);
+        HISTORY.setForeground(Color.green);
+        HISTORY.addActionListener(this);
+        layout.add(HISTORY);
+
+        EXIT = new JButton("Salir");
+        EXIT.setBounds(645, 210, 130, 40);
+        EXIT.setBackground(Color.black);
+        EXIT.setForeground(Color.green);
+        EXIT.addActionListener(e -> System.exit(0));
+
+        layout.add(EXIT);
+
+        header = new String[]{
+            "id_filtracion", "plataforma", "fecha", "nº afectados",
+            "descripción", "medidas"
+        };
+
+        data = new Object[0][6];
+        model = new DefaultTableModel(data, header);
+
+        table = new JTable(model);
+        table.setBackground(Color.black);
+        table.setForeground(Color.white);
+
+        //   table.getGridColor();
+        table.setGridColor(Color.green);
+
+        table.setEnabled(true); //desactiova editar las celdas
+        table.getTableHeader().setReorderingAllowed(false); //desactiva poder mover las columnas
+        //SCROLL
+        scroll = new JScrollPane(table);
+
+        scroll.setBounds(0, 250, 780, 200);
+        scroll.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
+        scroll.setForeground(Color.yellow);
+        layout.add(scroll);
+
     }
 
     @Override
     public void actionPerformed(ActionEvent e) {
 
         Scroll scroll = new Scroll(); //intanciar clase scroll para crear joptionpane de gran tamaño
-
-        if (e.getSource() == INSERT) {
-
-            try {
-
-                MetodosToSql.añadirFiltracion(model);
-            } catch (SQLException ex) {
-                ex.printStackTrace();
-            } catch (IOException ex) {
-                ex.printStackTrace();
-            }
-        }
 
         if (e.getSource() == QUERY) {
 
@@ -113,7 +158,7 @@ public class AdministradoresGUI extends GUI implements ActionListener {
                 while (rs.next()) {
                     String usuario = rs.getString("usuario");
 
-                    us.add("[*]" + usuario + " \n");
+                    us.add(usuario + " \n");
                     contador++;
 
                 }
@@ -131,63 +176,10 @@ public class AdministradoresGUI extends GUI implements ActionListener {
         }
         //BOTON INSERTAR
         if (e.getSource() == UPDATE) {
-            System.out.println("Botón presionado");
+            AdministradoresGUI.refreshBD();
 
-            try {
+            JOptionPane.showMessageDialog(null, "Tabla actualizada ✔");
 
-                Connection con = MetodosToSql.establecerConexion();
-                String queryActualizar = "SELECT  id_filtracion, plataforma, fecha, numero_afectados, descripcion, medidas FROM FILTRACIONES";
-
-                PreparedStatement pre = con.prepareStatement(queryActualizar);
-
-                ResultSet rs = pre.executeQuery();
-
-                while (rs.next()) {
-
-                    int idFiltracion = rs.getInt("id_filtracion");
-                    String plataforma = rs.getString("plataforma");
-                    Date fecha = rs.getDate("fecha");
-                    int numerosAfecatos = rs.getInt("numero_afectados");
-                    String descripcion = rs.getString("descripcion");
-                    String medidas = rs.getString("medidas");
-
-                    //Validacion para que no actualice filtraciones ya existentes en la tabla
-                    boolean existe = false;
-                    //obtiene el id de todas filas y las compara con el id filtration
-                    for (int i = 0; i < model.getRowCount(); i++) {
-                        int id = (int) model.getValueAt(i, 0);
-                        if (id == idFiltracion) {
-                            existe = true;
-
-                            model.setValueAt(plataforma, i, 1);  // Columna de plataforma
-                            model.setValueAt(fecha, i, 2);       // Columna de fecha
-                            model.setValueAt(numerosAfecatos, i, 3); // Columna de número de afectados
-                            model.setValueAt(descripcion, i, 4);  // Columna de descripción
-                            model.setValueAt(medidas, i, 5);     // Columna de medidas
-                            break;
-
-                        }
-                    }
-                    //si el id no exite,crea un objeto en la tabla
-                    if (!existe) {
-                        Object[] row = new Object[]{
-                            idFiltracion, plataforma, fecha, numerosAfecatos, descripcion, medidas
-
-                        };
-
-                        model.addRow(row);
-
-                    }
-
-                }
-                JOptionPane.showMessageDialog(null, "Tabla actualizada ✔");
-
-            } catch (SQLException e2) {
-
-                System.out.println("[-] No se ha podido realizar la conexión");
-                e2.printStackTrace();
-
-            }
         }
 
         if (e.getSource() == DELETE) {
@@ -216,8 +208,6 @@ public class AdministradoresGUI extends GUI implements ActionListener {
                         exx.printStackTrace();
                     }
 
-                } else if (selectedRow == -1) {
-                    JOptionPane.showInternalMessageDialog(null, "Selecciona una celda", "❌", JOptionPane.ERROR_MESSAGE);
                 }
 
             } catch (SQLException e7) {
@@ -225,37 +215,107 @@ public class AdministradoresGUI extends GUI implements ActionListener {
             }
 
         }
-        /*
-        if (e.getSource() == MODIFY) {
-           
+
+        if (e.getSource() == HISTORY) {
+
+            String message = "";
+            Scroll scrollHistory = new Scroll();
             try {
+                Connection con = MetodosToSql.establecerConexion();
+                String queryHistory = "SELECT * FROM historial";
+                PreparedStatement pre = con.prepareStatement(queryHistory);
+                ResultSet rs = pre.executeQuery();
 
-                MetodosToSql.modifyQuery();
+                while (rs.next()) {
+                    int idHistorial = rs.getInt(1);
+                    Date date = rs.getDate(2);
+                    String cambios = rs.getString(3);
+                    int idAdmin = rs.getInt(4);
 
-            } catch (SQLException e4) {
-                e4.printStackTrace();
+                    message
+                            += "\n[*]id historial -> " + idHistorial
+                            + "\nfecha: " + date
+                            + "\ncambios: " + cambios
+                            + "\nid admin: " + idAdmin
+                            + "\n--------------------";
+
+                }
+                scrollHistory.setMessage(message);
+                JScrollPane sc = scrollHistory.getJScrollPane();
+                JOptionPane.showMessageDialog(null, sc, "Historial cambios", JOptionPane.INFORMATION_MESSAGE);
+
+            } catch (SQLException ee) {
+                ee.printStackTrace();
             }
 
         }
-*/
+
     }
 
-    //metodo que devuelve el model (para usarlo en otras clases)
-
-    public DefaultTableModel getModel() {
+    //METODO PARA USAR LA TABLA EN OTRAS CLASES
+    public static DefaultTableModel getModel() {
         return model;
+    }
+
+    //METODO QUE REFRESCA LA TABLA AL INICIALIZAR ADMINISTRADORESGUI
+    public static void refreshBD() {
+
+        try {
+
+            Connection con = MetodosToSql.establecerConexion();
+            String queryActualizar = "SELECT  id_filtracion, plataforma, fecha, numero_afectados, descripcion, medidas FROM FILTRACIONES";
+
+            PreparedStatement pre = con.prepareStatement(queryActualizar);
+
+            ResultSet rs = pre.executeQuery();
+
+            while (rs.next()) {
+
+                int idFiltracion = rs.getInt("id_filtracion");
+                String plataforma = rs.getString("plataforma");
+                Date fecha = rs.getDate("fecha");
+                int numerosAfecatos = rs.getInt("numero_afectados");
+                String descripcion = rs.getString("descripcion");
+                String medidas = rs.getString("medidas");
+
+                //Validacion para que no actualice filtraciones ya existentes en la tabla
+                boolean existe = false;
+                //obtiene el id de todas filas y las compara con el id filtration
+                for (int i = 0; i < model.getRowCount(); i++) {
+                    int id = (int) model.getValueAt(i, 0);
+                    if (id == idFiltracion) {
+                        existe = true;
+
+                        model.setValueAt(plataforma, i, 1);  // Columna de plataforma
+                        model.setValueAt(fecha, i, 2);       // Columna de fecha
+                        model.setValueAt(numerosAfecatos, i, 3); // Columna de número de afectados
+                        model.setValueAt(descripcion, i, 4);  // Columna de descripción
+                        model.setValueAt(medidas, i, 5);     // Columna de medidas
+                        break;
+
+                    }
+                }
+                //si el id no exite,crea un objeto en la tabla
+                if (!existe) {
+                    Object[] row = new Object[]{
+                        idFiltracion, plataforma, fecha, numerosAfecatos, descripcion, medidas
+
+                    };
+
+                    model.addRow(row);
+
+                }
+
+            }
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
     }
 
     public static void main(String[] args) {
 
         new AdministradoresGUI();
-
-        try {
-            MetodosToSql.establecerConexion();
-
-        } catch (SQLException ex) {
-            ex.printStackTrace();
-        }
 
     }
 }
