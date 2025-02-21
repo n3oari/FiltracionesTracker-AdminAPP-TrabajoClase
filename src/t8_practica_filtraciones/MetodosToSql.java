@@ -13,6 +13,7 @@ public class MetodosToSql {
 
     private static int afectados;
     private static int idAdmin = -1;
+    private static String nameAdmin;
 
     /*---------------------METODOS INDEX----------------------
     0 - SETTETS Y GETTERS ID ADMIN
@@ -26,13 +27,21 @@ public class MetodosToSql {
     8 - QUERY PARA MODIFICAR TABLE + BD (USA EL ID DEL METODO 7)
     ----------------------------------------------------------
      */
-    //0 SETTERS Y GETTERS ID ADMIN
+    //0 SETTERS Y GETTERS ID ADMIN Y ADMIN NAME
     public static void setIdAdmin(int id) {
         idAdmin = id;
     }
 
     public static int getIdAdmin() {
         return idAdmin;
+    }
+    
+    public static  void setAdminName (String name){
+        nameAdmin = name;
+        
+    }
+    public static String getAdminName(){
+        return nameAdmin;
     }
 
     // 1 -> METODO CREAR UNA CONEXION
@@ -139,10 +148,12 @@ public class MetodosToSql {
         String rutaUsers = JOptionPane.showInputDialog("Introduce ruta diccionario usuarios");
         String rutaPass = JOptionPane.showInputDialog("Introduce ruta diccionario contraseñas");
         String rutaEmails = JOptionPane.showInputDialog("Introduce ruta diccionario emails");
-
+        String rutaNum = JOptionPane.showInputDialog(null,"Introduce ruta diccionario numeros");
+        
         File usuario = new File(rutaUsers);
         File pass = new File(rutaPass);
         File correo = new File(rutaEmails);
+        File num = new File(rutaNum);
 
         String queryUsuarios = "INSERT IGNORE INTO CREDENCIALES (usuario, correo, contraseña, telefono, id_filtracion) VALUES (?,?,?,?,?)";
         PreparedStatement prepared = establecerConexion().prepareStatement(queryUsuarios);
@@ -150,13 +161,14 @@ public class MetodosToSql {
         LinkedList<String> users = new LinkedList<>();
         LinkedList<String> emails = new LinkedList<>();
         LinkedList<String> passwds = new LinkedList<>();
-        LinkedList<Integer> numbersPhone = new LinkedList<>();
+        LinkedList<String> numbersPhone = new LinkedList<>();
 
+        
         try {
             users = MetodosToSql.leerArchivo(usuario, afectados);
             emails = MetodosToSql.leerArchivo(correo, afectados);
             passwds = MetodosToSql.leerArchivo(pass, afectados);
-            numbersPhone = MetodosToSql.generarNum(afectados);
+            numbersPhone = (MetodosToSql.leerArchivo(num, afectados));
 
             System.out.println("Usuarios cargados: " + users.size());
             System.out.println("Correos cargados: " + emails.size());
@@ -177,7 +189,7 @@ public class MetodosToSql {
             prepared.setString(1, users.get(i));
             prepared.setString(2, emails.get(i));
             prepared.setString(3, passwds.get(i));
-            prepared.setInt(4, numbersPhone.get(i));
+            prepared.setInt(4, Integer.parseInt(numbersPhone.get(i)));
             prepared.setInt(5, idGenerado);
             prepared.executeUpdate();
 
@@ -213,7 +225,7 @@ public class MetodosToSql {
 
         try {
             Connection con = establecerConexion();
-            String queryGetId = "SELECT id_administrador FROM administradores WHERE usuario =? AND contraseña =?";
+            String queryGetId = "SELECT id_administrador,usuario FROM administradores WHERE usuario =? AND contraseña =?";
             PreparedStatement pre = con.prepareStatement(queryGetId);
             pre.setString(1, usuarioAdmin);
             pre.setString(2, contraseñaAdmin);
@@ -225,8 +237,10 @@ public class MetodosToSql {
                 JOptionPane.showMessageDialog(null, "[+]Adminitrador verficado exitosamente ");
                 JOptionPane.showMessageDialog(null, ".........entrando como administrador");
                 idAdmin = rs.getInt("id_administrador");
+                nameAdmin = rs.getString("usuario");
                 //  JOptionPane.showMessageDialog(null, "id admin generado " + idAdmin);
                 MetodosToSql.setIdAdmin(idAdmin);
+                MetodosToSql.setAdminName(nameAdmin);
 
                 
                 new AdministradoresGUI();

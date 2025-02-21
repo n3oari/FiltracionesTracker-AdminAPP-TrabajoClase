@@ -5,6 +5,8 @@ import java.awt.Color;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.sql.*;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import javax.swing.JButton;
 import javax.swing.JOptionPane;
@@ -13,14 +15,14 @@ public class UsersGUI extends GUI implements ActionListener {
 
     final private JButton ACCEDERCOMOADMIN;
     final private JButton INPUTCREDENCIALES;
+    final private JButton SHOWCOUNT;
     final private JButton EXIT;
-   
 
     public UsersGUI() {
 
         super();
 
-        this.setTitle("GUI USUARIO ¯\\_( ͡° ͜ʖ ͡°)_/¯¯\\_( ͡° ͜ʖ ͡°)_/¯¯\\_( ͡° ͜ʖ ͡°)_/¯¯\\_( ͡° ͜ʖ ͡°)_/¯¯\\_( ͡° ͜ʖ ͡°)_/¯¯\\_( ͡° ͜ʖ ͡°)_/¯"
+        this.setTitle("\\_( ͡° ͜ʖ ͡°)_/¯¯\\_( ͡° ͜ʖ ͡°)_/¯¯\\_( ͡° ͜ʖ ͡°)_/¯¯\\_( ͡° ͜ʖ ͡°)_/¯"
                 + "¯\\_( ͡° ͜ʖ ͡°)_/¯¯\\_( ͡° ͜ʖ ͡°)_/¯¯\\_( ͡° ͜ʖ ͡°)_/¯¯\\_( ͡° ͜ʖ ͡°)_/¯¯\\_( ͡° ͜ʖ ͡°)_/¯¯\\_( ͡° ͜ʖ ͡°)_/¯¯\\_( ͡° ͜ʖ ͡°)_/¯");
 
         ACCEDERCOMOADMIN = new JButton("Acceso admin");
@@ -36,7 +38,14 @@ public class UsersGUI extends GUI implements ActionListener {
         INPUTCREDENCIALES.setBackground(Color.BLACK);
         INPUTCREDENCIALES.setForeground(Color.red);
         layout.add(INPUTCREDENCIALES);
-        
+
+        SHOWCOUNT = new JButton("Contador");
+        SHOWCOUNT.setBounds(550, 0, 200, 50);
+        SHOWCOUNT.addActionListener(this);
+        SHOWCOUNT.setBackground(Color.BLACK);
+        SHOWCOUNT.setForeground(Color.red);
+        layout.add(SHOWCOUNT);
+
         EXIT = new JButton("Salir");
         EXIT.setBounds(545, 375, 200, 50);
         EXIT.setBackground(Color.black);
@@ -48,11 +57,8 @@ public class UsersGUI extends GUI implements ActionListener {
 
     @Override
     public void actionPerformed(ActionEvent e) {
-        
-        String message = "";
 
-  
-        
+        String message = "";
 
         if (e.getSource() == INPUTCREDENCIALES) {
 
@@ -83,8 +89,7 @@ public class UsersGUI extends GUI implements ActionListener {
                             String plata = rs.getString("plataforma");
                             Date fecha = rs.getDate("fecha");
 
-                            
-                            message += " \n[*]Plataforma -> " + plata + "\n[*]Fecha -> " + fecha + "\n-------------" ;
+                            message += " \n[*]Plataforma -> " + plata + "\n[*]Fecha -> " + fecha + "\n-------------";
 
                         }
                         scroll.setMessage(message);
@@ -110,7 +115,6 @@ public class UsersGUI extends GUI implements ActionListener {
                         ResultSet rs2 = pre2.executeQuery();
                         while (rs2.next()) {
 
-                            
                             String plata = rs2.getString("plataforma");
                             String fecha = rs2.getString("fecha");
 
@@ -130,8 +134,32 @@ public class UsersGUI extends GUI implements ActionListener {
             }
 
         }
+
+        if (e.getSource() == SHOWCOUNT) {
+
+            Connection con;
+            try {
+                con = MetodosToSql.establecerConexion();
+
+                String queryCount = "select count(usuario) as total from credenciales";
+
+                PreparedStatement pre = con.prepareStatement(queryCount);
+                
+                ResultSet rs = pre.executeQuery();
+                
+                while(rs.next()){
+                    
+                    int contador = rs.getInt("total");
+                    JOptionPane.showMessageDialog(null, contador);
+                }
+                
+            
+            } catch (SQLException ex) {
+                ex.printStackTrace();
+            }
         }
-    
+    }
+
     public static void main(String[] args) {
 
         new UsersGUI();
