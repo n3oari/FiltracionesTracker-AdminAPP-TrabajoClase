@@ -17,8 +17,10 @@ public class GUI extends JFrame {
 
     public GUI() {
 
+        
         this.setTitle("GUI super ");
         this.setSize(750, 450);
+        
         this.setResizable(false);
         this.setLocationRelativeTo(null);
         this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -66,3 +68,6 @@ public class GUI extends JFrame {
     }
 
 }
+
+
+//jpasswordfield
