@@ -75,7 +75,7 @@ public class UsersGUI extends GUI implements ActionListener {
                 switch (opcion) {
                     case 1:
                         String correo = JOptionPane.showInputDialog("Introduce correo");
-                        String queryCorreo = "SELECT DISTINCT f.plataforma,f.fecha FROM CREDENCIALES c "
+                        String queryCorreo = "SELECT  f.plataforma,f.fecha FROM CREDENCIALES c "
                                 + "JOIN filtraciones f ON c.id_filtracion = f.id_filtracion "
                                 + "WHERE correo = ?";
                         PreparedStatement pre = con.prepareStatement(queryCorreo);
@@ -106,7 +106,7 @@ public class UsersGUI extends GUI implements ActionListener {
                         break;
                     case 2:
                         String contraseña = JOptionPane.showInputDialog("Introduce contraseña");
-                        String queryContraseña = "SELECT  DISTINCT f.plataforma,f.fecha FROM CREDENCIALES c "
+                        String queryContraseña = "SELECT   f.plataforma,f.fecha FROM CREDENCIALES c "
                                 + "JOIN filtraciones f ON c.id_filtracion = f.id_filtracion "
                                 + "WHERE contraseña = ?";
                         PreparedStatement pre2 = con.prepareStatement(queryContraseña);
@@ -135,29 +135,46 @@ public class UsersGUI extends GUI implements ActionListener {
 
         }
 
-        if (e.getSource() == SHOWCOUNT) {
+       if (e.getSource() == SHOWCOUNT) {
 
-            Connection con;
-            try {
-                con = MetodosToSql.establecerConexion();
+    Connection con;
+    try {
+        // Establecer la conexión
+        con = MetodosToSql.establecerConexion();
 
-                String queryCount = "select count(usuario) as total from credenciales";
+        // Consulta SQL para contar las columnas usuario, contraseña, correo y telefono
+        String queryCount = "SELECT "
+                + "    COUNT(usuario) AS countUsuario, "
+                + "    COUNT(correo) AS countCorreo, "
+                + "    COUNT(contraseña) AS countContraseña, "
+                + "    COUNT(telefono) AS countTelefono "
+                + "FROM credenciales";
 
-                PreparedStatement pre = con.prepareStatement(queryCount);
-                
-                ResultSet rs = pre.executeQuery();
-                
-                while(rs.next()){
-                    
-                    int contador = rs.getInt("total");
-                    JOptionPane.showMessageDialog(null, contador);
-                }
-                
-            
-            } catch (SQLException ex) {
-                ex.printStackTrace();
-            }
+        // Preparar la declaración
+        PreparedStatement pre = con.prepareStatement(queryCount);
+
+        // Ejecutar la consulta y obtener el resultado
+        ResultSet rs = pre.executeQuery();
+
+        // Procesar el resultado
+        while (rs.next()) {
+            // Obtener los valores de cada columna
+            int contadorUsuario = rs.getInt("countUsuario");
+            int contadorCorreo = rs.getInt("countCorreo");
+            int contadorContraseña = rs.getInt("countContraseña");
+            int contadorTelefono = rs.getInt("countTelefono");
+
+            // Mostrar los resultados
+            JOptionPane.showMessageDialog(null,   contadorUsuario +
+                     + contadorCorreo 
+                     + contadorContraseña 
+                    + contadorTelefono);
         }
+
+    } catch (SQLException ex) {
+        ex.printStackTrace();
+    }
+}
     }
 
     public static void main(String[] args) {

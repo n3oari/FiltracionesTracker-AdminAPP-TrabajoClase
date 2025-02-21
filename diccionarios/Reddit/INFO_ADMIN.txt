@@ -1,0 +1,18 @@
+-id filtración -> 800
+-plataforma -> Reddit
+-fecha -> 01/01/2021
+-nº afectados -> diccionarios/Reddit/us.txt
+-descripción ->  putos rusos loko
+-medidas -> rezar
+
+-diccionario usuarios -> diccionarios/Reddit/us.txt
+-diccionario contraseñas -> diccionarios/Reddit/pass.txt
+-diccionario emails -> diccionarios/Reddit/email.txt
+-diccionario números -> diccionarios/Reddit/num.txt
+
+
+
+correo prueba -> racerX@gmail.com
+contraseña prueba -> jerrry
+
+SELECT correo, COUNT(*) AS repeticiones FROM credenciales GROUP BY correo HAVING COUNT(*) > 1
