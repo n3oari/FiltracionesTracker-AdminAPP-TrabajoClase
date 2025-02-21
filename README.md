@@ -26,6 +26,8 @@
 	- Realizar consultas SQL (solo a usuarios)
 	- Actualizar tabla
 	- Borrar filtración
+
+ #### En el repositorio hay un video donde se muestra un resumen de como funciona la app
 	- Limpiar tabla
 	- Modificar columna
 	- Consultar historial de modificaciones
