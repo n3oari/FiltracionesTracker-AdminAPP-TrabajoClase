@@ -5,9 +5,6 @@ import java.awt.Color;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.sql.*;
-import java.util.logging.Level;
-import java.util.logging.Logger;
-
 import javax.swing.JButton;
 import javax.swing.JOptionPane;
 
@@ -74,8 +71,9 @@ public class UsersGUI extends GUI implements ActionListener {
 
                 switch (opcion) {
                     case 1:
+
                         String correo = JOptionPane.showInputDialog("Introduce correo");
-                        String queryCorreo = "SELECT  f.plataforma,f.fecha FROM CREDENCIALES c "
+                        String queryCorreo = "SELECT DISTINCT f.plataforma,f.fecha FROM CREDENCIALES c "
                                 + "JOIN filtraciones f ON c.id_filtracion = f.id_filtracion "
                                 + "WHERE correo = ?";
                         PreparedStatement pre = con.prepareStatement(queryCorreo);
@@ -106,7 +104,7 @@ public class UsersGUI extends GUI implements ActionListener {
                         break;
                     case 2:
                         String contraseña = JOptionPane.showInputDialog("Introduce contraseña");
-                        String queryContraseña = "SELECT   f.plataforma,f.fecha FROM CREDENCIALES c "
+                        String queryContraseña = "SELECT DISTINCT  f.plataforma,f.fecha FROM CREDENCIALES c "
                                 + "JOIN filtraciones f ON c.id_filtracion = f.id_filtracion "
                                 + "WHERE contraseña = ?";
                         PreparedStatement pre2 = con.prepareStatement(queryContraseña);
@@ -118,63 +116,78 @@ public class UsersGUI extends GUI implements ActionListener {
                             String plata = rs2.getString("plataforma");
                             String fecha = rs2.getString("fecha");
 
-                            JOptionPane.showMessageDialog(null,
-                                    "!!!!!!!!Tus credenciales han sido comprometidas⚠⚠⚠⚠⚠⚠⚠!!!!!!!!"
-                                    + "0\n[*]Plataforma -> " + plata + "\n[*]Fecha -> " + fecha);
+                            credencialEncontrada = true;
+
+                            message += " \n[*]Plataforma -> " + plata + "\n[*]Fecha -> " + fecha + "\n-------------";
 
                         }
+                        scroll.setMessage(message);
+
+                        if (!credencialEncontrada) {
+                            JOptionPane.showMessageDialog(null, "Tus credenciales no han sido comprometidas ✔");
+
+                        } else {
+
+                            JOptionPane.showMessageDialog(null, scroll.getJScrollPane(), "Credenciales comprometidas ⚠ ⚠   ", JOptionPane.WARNING_MESSAGE);
+                            credencialEncontrada = true;
+
+                        }
+
                         break;
                     default:
-                        JOptionPane.showMessageDialog(null, "Opción no válida", "Error", JOptionPane.ERROR_MESSAGE);
+                        JOptionPane.showMessageDialog(null, "Opción no válida", "ERROR", JOptionPane.ERROR_MESSAGE);
                         break;
                 }
 
             } catch (SQLException ex) {
                 ex.printStackTrace();
+            } catch(NumberFormatException ex){
+                ex.printStackTrace();
+                JOptionPane.showMessageDialog(null, "Solo se aceptan valores numericos enteros","ERROR",JOptionPane.ERROR_MESSAGE);
             }
 
         }
 
-       if (e.getSource() == SHOWCOUNT) {
+        if (e.getSource() == SHOWCOUNT) {
 
-    Connection con;
-    try {
-        // Establecer la conexión
-        con = MetodosToSql.establecerConexion();
+            Connection con;
+            try {
+                // Establecer la conexión
+                con = MetodosToSql.establecerConexion();
 
-        // Consulta SQL para contar las columnas usuario, contraseña, correo y telefono
-        String queryCount = "SELECT "
-                + "    COUNT(usuario) AS countUsuario, "
-                + "    COUNT(correo) AS countCorreo, "
-                + "    COUNT(contraseña) AS countContraseña, "
-                + "    COUNT(telefono) AS countTelefono "
-                + "FROM credenciales";
+                // Consulta SQL para contar las columnas usuario, contraseña, correo y telefono
+                String queryCount = "SELECT "
+                        + "    COUNT(usuario) AS countUsuario, "
+                        + "    COUNT(correo) AS countCorreo, "
+                        + "    COUNT(contraseña) AS countContraseña, "
+                        + "    COUNT(telefono) AS countTelefono "
+                        + "FROM credenciales";
 
-        // Preparar la declaración
-        PreparedStatement pre = con.prepareStatement(queryCount);
+                // Preparar la declaración
+                PreparedStatement pre = con.prepareStatement(queryCount);
 
-        // Ejecutar la consulta y obtener el resultado
-        ResultSet rs = pre.executeQuery();
+                // Ejecutar la consulta y obtener el resultado
+                ResultSet rs = pre.executeQuery();
 
-        // Procesar el resultado
-        while (rs.next()) {
-            // Obtener los valores de cada columna
-            int contadorUsuario = rs.getInt("countUsuario");
-            int contadorCorreo = rs.getInt("countCorreo");
-            int contadorContraseña = rs.getInt("countContraseña");
-            int contadorTelefono = rs.getInt("countTelefono");
+                // Procesar el resultado
+                while (rs.next()) {
+                    // Obtener los valores de cada columna
+                    int contadorUsuario = rs.getInt("countUsuario");
+                    int contadorCorreo = rs.getInt("countCorreo");
+                    int contadorContraseña = rs.getInt("countContraseña");
+                    int contadorTelefono = rs.getInt("countTelefono");
 
-            // Mostrar los resultados
-            JOptionPane.showMessageDialog(null,   contadorUsuario +
-                     + contadorCorreo 
-                     + contadorContraseña 
-                    + contadorTelefono);
+                    // Mostrar los resultados
+                    JOptionPane.showMessageDialog(null, "" + "💀💀💀" + (contadorUsuario
+                            + +contadorCorreo
+                            + contadorContraseña
+                            + contadorTelefono) + "💀💀💀");
+                }
+
+            } catch (SQLException ex) {
+                ex.printStackTrace();
+            }
         }
-
-    } catch (SQLException ex) {
-        ex.printStackTrace();
-    }
-}
     }
 
     public static void main(String[] args) {

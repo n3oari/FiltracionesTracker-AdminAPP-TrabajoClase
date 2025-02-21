@@ -3,7 +3,6 @@ package t8_practica_filtraciones;
 import javax.swing.*;
 import java.awt.*;
 import java.io.File;
-import javax.swing.table.DefaultTableModel;
 
 //CLASE SUPER QUE DE ELLA HEREDARAN USERSGUI Y ADMINSGUI
 public class GUI extends JFrame {
@@ -12,8 +11,6 @@ public class GUI extends JFrame {
     protected JLabel imgL;
     protected ImageIcon imgg;
     protected Image img;
-    //TABLA
- 
 
     public GUI() {
 
@@ -43,22 +40,10 @@ public class GUI extends JFrame {
         File f = new File("img/ww.png");
         imgg = new ImageIcon(f.getAbsolutePath());
 
-        //BOTON CERRAR
-        JButton SALIR = new JButton("Salir");
-        
-       
-
         this.setVisible(true);
-        
-        
+
     }
-    
-    
-    //METODO PARA USAR LA TABLA EN OTRAS CLASES
-   
-    
-    
-      
+
     public static void main(String[] args) {
 
         new GUI();

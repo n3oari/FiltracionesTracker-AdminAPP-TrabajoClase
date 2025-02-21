@@ -22,19 +22,18 @@ public class AdministradoresGUI extends GUI implements ActionListener {
     //TABLA
     protected JTable table;
     protected static DefaultTableModel model;
-    protected JScrollPane scroll;
+    protected JScrollPane vertialScroll;
     protected String[] header;
     protected Object[][] data;
 
     public AdministradoresGUI() {
 
         super();
-        this.setTitle(MetodosToSql.getAdminName()+ "           🗲｡◕‿‿◕｡ 🗲｡◕‿‿◕｡ 🗲｡◕‿‿◕｡ 🗲｡◕‿‿◕｡ 🗲｡◕‿‿◕｡ 🗲｡◕‿‿◕｡ 🗲｡◕‿‿◕🗲｡◕‿‿◕🗲｡◕‿‿◕🗲｡◕‿‿◕🗲｡◕‿‿◕🗲｡◕‿‿◕ ");
-
+        this.setTitle(MetodosToSql.getAdminName() + "           🗲｡◕‿‿◕｡ 🗲｡◕‿‿◕｡ 🗲｡◕‿‿◕｡ 🗲｡◕‿‿◕｡ 🗲｡◕‿‿◕｡ 🗲｡◕‿‿◕｡ 🗲｡◕‿‿◕🗲｡◕‿‿◕🗲｡◕‿‿◕🗲｡◕‿‿◕🗲｡◕‿‿◕🗲｡◕‿‿◕ ");
         this.setSize(780, 450);
+        layout.setSize(800, 450);
 
         layout.setBackground(Color.GREEN);
-
         //BOTON AÑADIR FILTRACION
         INSERT = new JButton("Añadir filtración ");
         INSERT.setBounds(0, 0, 130, 40);
@@ -115,26 +114,25 @@ public class AdministradoresGUI extends GUI implements ActionListener {
             "id_filtracion", "plataforma", "fecha", "nº afectados",
             "descripción", "medidas"
         };
-
         data = new Object[0][6];
         model = new DefaultTableModel(data, header);
 
         table = new JTable(model);
         table.setBackground(Color.black);
         table.setForeground(Color.white);
-
-        //   table.getGridColor();
         table.setGridColor(Color.green);
+        table.setEnabled(true); // desactiva editar las celdas
+        table.getTableHeader().setReorderingAllowed(false); // desactiva poder mover las columnas
 
-        table.setEnabled(true); //desactiova editar las celdas
-        table.getTableHeader().setReorderingAllowed(false); //desactiva poder mover las columnas
-        //SCROLL
-        scroll = new JScrollPane(table);
+        // SCROLL
+        vertialScroll = new JScrollPane(table);
+        vertialScroll.setBounds(0, 250, 780, 300);
+        vertialScroll.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
+        vertialScroll.setForeground(Color.yellow);
 
-        scroll.setBounds(0, 250, 780, 200);
-        scroll.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
-        scroll.setForeground(Color.yellow);
-        layout.add(scroll);
+        layout.add(vertialScroll); // Agrega el JScrollPane al layout
+
+        layout.add(vertialScroll);
 
     }
 
@@ -145,7 +143,7 @@ public class AdministradoresGUI extends GUI implements ActionListener {
 
         if (e.getSource() == QUERY) {
 
-            String queryInput = JOptionPane.showInputDialog("Introduce la query");
+            String queryInput = JOptionPane.showInputDialog("Introduce la query (solo diponible columna usuario)");
             PreparedStatement pre;
 
             try {
@@ -183,6 +181,7 @@ public class AdministradoresGUI extends GUI implements ActionListener {
         }
 
         if (e.getSource() == DELETE) {
+
             try {
                 Connection con = MetodosToSql.establecerConexion();
                 int selectedRow = table.getSelectedRow();
@@ -195,23 +194,18 @@ public class AdministradoresGUI extends GUI implements ActionListener {
                     int idFiltracion = (int) table.getValueAt(selectedRow, 0);
 
                     String queryDelete = "DELETE FROM filtraciones WHERE id_filtracion = ?";
-                    try {
-                        PreparedStatement pre = con.prepareStatement(queryDelete);
 
-                        pre.setInt(1, idFiltracion);
-                        pre.executeUpdate();
+                    PreparedStatement pre = con.prepareStatement(queryDelete);
 
-                        model.removeRow(selectedRow);
-                        JOptionPane.showMessageDialog(null, "Filtración eliminada✔✔✔✔");
+                    pre.setInt(1, idFiltracion);
+                    pre.executeUpdate();
 
-                    } catch (SQLException exx) {
-                        exx.printStackTrace();
-                    }
+                    model.removeRow(selectedRow);
+                    JOptionPane.showMessageDialog(null, "Filtración eliminada✔✔✔✔");
 
                 }
-
-            } catch (SQLException e7) {
-                e7.printStackTrace();
+            } catch (SQLException ex) {
+                ex.printStackTrace();
             }
 
         }
@@ -233,7 +227,7 @@ public class AdministradoresGUI extends GUI implements ActionListener {
                     int idAdmin = rs.getInt(4);
 
                     message
-                            += "\n[*]id historial -> " + idHistorial
+                            += "\nid historial -> " + idHistorial
                             + "\nfecha: " + date
                             + "\ncambios: " + cambios
                             + "\nid admin: " + idAdmin
@@ -292,7 +286,6 @@ public class AdministradoresGUI extends GUI implements ActionListener {
                         model.setValueAt(descripcion, i, 4);  // Columna de descripción
                         model.setValueAt(medidas, i, 5);     // Columna de medidas
                         break;
-
                     }
                 }
                 //si el id no exite,crea un objeto en la tabla
