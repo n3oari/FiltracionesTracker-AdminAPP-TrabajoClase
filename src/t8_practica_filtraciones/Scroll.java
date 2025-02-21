@@ -28,7 +28,7 @@ public class Scroll {
         messageArea = message;
         TEXTAREA.setText(messageArea);
     }
-    
+
     public JScrollPane getJScrollPane() {
         return JSCROLL;
     }

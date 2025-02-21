@@ -141,9 +141,9 @@ public class UsersGUI extends GUI implements ActionListener {
 
             } catch (SQLException ex) {
                 ex.printStackTrace();
-            } catch(NumberFormatException ex){
+            } catch (NumberFormatException ex) {
                 ex.printStackTrace();
-                JOptionPane.showMessageDialog(null, "Solo se aceptan valores numericos enteros","ERROR",JOptionPane.ERROR_MESSAGE);
+                JOptionPane.showMessageDialog(null, "Solo se aceptan valores numericos enteros", "ERROR", JOptionPane.ERROR_MESSAGE);
             }
 
         }

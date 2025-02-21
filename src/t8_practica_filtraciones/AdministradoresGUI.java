@@ -20,11 +20,11 @@ public class AdministradoresGUI extends GUI implements ActionListener {
     final private JButton HISTORY;
     final private JButton EXIT;
     //TABLA
-    protected JTable table;
-    protected static DefaultTableModel model;
-    protected JScrollPane vertialScroll;
-    protected String[] header;
-    protected Object[][] data;
+    private JTable table;
+    private static DefaultTableModel model;
+    private JScrollPane vertialScroll;
+    private String[] header;
+    private Object[][] data;
 
     public AdministradoresGUI() {
 
@@ -121,7 +121,7 @@ public class AdministradoresGUI extends GUI implements ActionListener {
         table.setBackground(Color.black);
         table.setForeground(Color.white);
         table.setGridColor(Color.green);
-        table.setEnabled(true); // desactiva editar las celdas
+        table.setEnabled(true);
         table.getTableHeader().setReorderingAllowed(false); // desactiva poder mover las columnas
 
         // SCROLL
