@@ -15,7 +15,7 @@ public class T8_PRACTICA_FILTRACIONES {
  
         
         try{
-          Connection con =   MetodosToSql.establecerConexion();
+            MetodosToSql.establecerConexion();
             new UsersGUI();
         }catch(SQLException e){
             e.printStackTrace();

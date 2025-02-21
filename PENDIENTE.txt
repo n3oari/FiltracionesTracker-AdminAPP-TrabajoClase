@@ -1,0 +1,36 @@
+
+
+
+
+userGUI{
+	
+
+	JLabel introduce credenciales
+	accederComoAdministrador(); 
+	listarPorCrendenciales();
+	salir();
+}
+
+administradorGUI{
+
+	JLabel introduce crenenciales
+
+
+	listarTodo();
+	listarPorCredenciales();
+	añadirFiltracion();
+	añadirCredencialesFiltradas();
+	modificarFiltracion();
+	eliminarFiltracion();
+	salir();
+}
+
+metodosToSql(){
+
+	crearConexion()
+	leerArchivos(); emails,usuarios,contraseñas
+	generarNum();
+	generarEmailDiccionario()
+	añadirUsuariosYQuery();
+
+}

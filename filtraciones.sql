@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Servidor: 127.0.0.1
--- Tiempo de generación: 20-02-2025 a las 02:27:11
+-- Tiempo de generación: 03-02-2025 a las 23:40:05
 -- Versión del servidor: 10.4.11-MariaDB
 -- Versión de PHP: 7.2.28
 
@@ -25,153 +25,221 @@ SET time_zone = "+00:00";
 -- --------------------------------------------------------
 
 --
--- Estructura de tabla para la tabla `administradores`
+-- Estructura de tabla para la tabla `facebook`
 --
 
-CREATE TABLE `administradores` (
-  `id_administrador` int(11) NOT NULL,
-  `usuario` varchar(50) DEFAULT NULL,
-  `contraseña` varchar(50) DEFAULT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
-
---
--- Volcado de datos para la tabla `administradores`
---
-
-INSERT INTO `administradores` (`id_administrador`, `usuario`, `contraseña`) VALUES
-(5, 'mario', 'loldam132'),
-(9, 'root', 'sudo666');
+CREATE TABLE `facebook` (
+  `usuario` varchar(15) NOT NULL,
+  `correo` varchar(30) NOT NULL,
+  `contraseña` varchar(20) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 -- --------------------------------------------------------
 
 --
--- Estructura de tabla para la tabla `credenciales`
+-- Estructura de tabla para la tabla `gmail`
 --
 
-CREATE TABLE `credenciales` (
-  `id_usuario` int(6) NOT NULL,
-  `usuario` varchar(20) DEFAULT NULL,
-  `correo` varchar(30) DEFAULT NULL,
-  `contraseña` varchar(30) DEFAULT NULL,
-  `telefono` int(9) DEFAULT NULL,
-  `id_filtracion` int(6) NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+CREATE TABLE `gmail` (
+  `usuario` varchar(15) NOT NULL,
+  `correo` varchar(30) NOT NULL,
+  `contraseña` varchar(20) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 -- --------------------------------------------------------
 
 --
--- Estructura de tabla para la tabla `filtraciones`
+-- Estructura de tabla para la tabla `hotmail`
 --
 
-CREATE TABLE `filtraciones` (
-  `id_filtracion` int(6) NOT NULL,
-  `plataforma` varchar(20) DEFAULT NULL,
-  `fecha` date DEFAULT NULL,
-  `numero_afectados` int(11) DEFAULT NULL,
-  `descripcion` varchar(100) DEFAULT NULL,
-  `medidas` varchar(100) DEFAULT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
-
---
--- Volcado de datos para la tabla `filtraciones`
---
-
-INSERT INTO `filtraciones` (`id_filtracion`, `plataforma`, `fecha`, `numero_afectados`, `descripcion`, `medidas`) VALUES
-(23, 'dd', '2000-10-10', 49581, 'ddd', 'huir al bosque'),
-(99, 'Telegram', '1990-10-10', 49581, 'putos rusos loko', 'dd'),
-(100, 'Twitter', '2020-01-01', 49581, 'putos rusos loko', 'nada'),
-(233, 'Twitter', '2020-01-01', 49581, 'putos rusos lojko', 'rezar'),
-(555, 'twitter', '2000-10-10', 49581, 'skdjskd', 'sdjskd');
+CREATE TABLE `hotmail` (
+  `usuario` varchar(15) NOT NULL,
+  `correo` varchar(30) NOT NULL,
+  `contraseña` varchar(20) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 -- --------------------------------------------------------
 
 --
--- Estructura de tabla para la tabla `historial`
+-- Estructura de tabla para la tabla `instagram`
 --
 
-CREATE TABLE `historial` (
-  `id_historial` int(11) NOT NULL,
-  `fecha` datetime DEFAULT current_timestamp(),
-  `cambios` varchar(300) DEFAULT NULL,
-  `id_administrador` int(11) NOT NULL
+CREATE TABLE `instagram` (
+  `usuario` varchar(15) NOT NULL,
+  `correo` varchar(30) NOT NULL,
+  `contraseña` varchar(20) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+-- --------------------------------------------------------
+
+--
+-- Estructura de tabla para la tabla `pornhub`
+--
+
+CREATE TABLE `pornhub` (
+  `usuario` varchar(15) NOT NULL,
+  `correo` varchar(30) NOT NULL,
+  `contraseña` varchar(20) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+-- --------------------------------------------------------
+
+--
+-- Estructura de tabla para la tabla `twitter`
+--
+
+CREATE TABLE `twitter` (
+  `usuario` varchar(15) NOT NULL,
+  `correo` varchar(30) NOT NULL,
+  `contraseña` varchar(20) NOT NULL,
+  `telefono` int(9) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 --
--- Volcado de datos para la tabla `historial`
+-- Volcado de datos para la tabla `twitter`
 --
 
-INSERT INTO `historial` (`id_historial`, `fecha`, `cambios`, `id_administrador`) VALUES
-(2, '2025-02-19 22:40:23', 'hhchha', 9),
-(3, '2025-02-19 22:43:45', 'sdsdsd', 9),
-(4, '2025-02-19 22:44:27', 'sdksldlk', 9),
-(5, '2025-02-19 22:47:41', 'sdsdsd', 9),
-(6, '2025-02-19 22:53:36', '[-]sds [+] Twitter', 9),
-(7, '2025-02-19 22:57:43', NULL, 9),
-(8, '2025-02-19 22:58:37', '[*]descripcion [-]putos rusos loko [+]putos chinos loko', 9),
-(9, '2025-02-20 00:06:07', '[*]plataforma [-]Twitter[+]Telegram', 9),
-(10, '2025-02-20 02:12:03', '[*]descripcion [-]putos chinos loko [+] putos rusos loko', 9);
+INSERT INTO `twitter` (`usuario`, `correo`, `contraseña`, `telefono`) VALUES
+('admin', 'admin@gmail.com', '123456789', 644793735),
+('alex', 'black@gmail.com', '987654321', 659858246),
+('andrew', 'steve@gmail.com', '1234', 697731537),
+('anthony', 'matthew@gmail.com', '112233', 686822227),
+('bill', 'mail@gmail.com', 'homelesspa', 625329983),
+('billy', 'jordan@gmail.com', '789456123', 673368723),
+('black', 'johnny@gmail.com', 'qwerty123', 674827303),
+('bob', 'superman@gmail.com', '12qwaszx', 697338827),
+('brandon', 'killer@gmail.com', 'jordan23', 621289458),
+('brian', 'jason@gmail.com', 'qwerty1', 655371550),
+('buster', 'calvin@gmail.com', 'samsung', 631212844),
+('calvin', 'iceman@gmail.com', 'a12345', 634131919),
+('cameron', 'harley@gmail.com', 'computer', 602069833),
+('captain', 'kevin@gmail.com', 'fuckyou1', 647886633),
+('carlos', 'shadow@gmail.com', '7777777', 630478155),
+('charles', 'pussy@gmail.com', '121212', 699382391),
+('charlie', 'george@gmail.com', 'monkey', 685456441),
+('chris', 'robert@gmail.com', '1234567', 683306772),
+('coffee', 'sparky@gmail.com', 'michael1', 683075491),
+('cowboy', 'captain@gmail.com', 'princess1', 648060072),
+('dallas', 'hammer@gmail.com', '123123123', 687235487),
+('daniel', 'mark@gmail.com', '1q2w3e4r5t', 620310299),
+('darren', 'jeffrey@gmail.com', 'killer', 602151532),
+('dave', 'mike@gmail.com', '12345', 602331549),
+('david', 'john@gmail.com', '12345678', 617477484),
+('dennis', 'anthony@gmail.com', 'qazwsx', 683962108),
+('dick', 'sexy@gmail.com', 'shadow', 659008498),
+('donald', 'bob@gmail.com', 'asdf', 612753483),
+('dragon', 'paul@gmail.com', 'dragon', 668074052),
+('edward', 'brian@gmail.com', '1g2w3e4r', 662027042),
+('eric', 'cowboy@gmail.com', '999999', 692284778),
+('frank', 'mustang@gmail.com', 'iloveyou1', 677588975),
+('fred', 'scotty@gmail.com', 'azerty', 638477722),
+('freddy', 'jeremy@gmail.com', '777777', 634159164),
+('fuck', 'dallas@gmail.com', '12345a', 603664158),
+('gary', 'jack@gmail.com', 'princess', 652200162),
+('general', 'timothy@gmail.com', 'jordan', 623577833),
+('george', 'andrew@gmail.com', 'qwertyuiop', 617130266),
+('hammer', '12345@gmail.com', 'fuckyou', 636157709),
+('harley', 'justin@gmail.com', 'asdfghjkl', 601577697),
+('hunter', 'peter@gmail.com', 'qwe123', 601076016),
+('iceman', '123@gmail.com', 'superman', 641339027),
+('info', 'info@gmail.com', '123456', 688915355),
+('jack', 'natasha@gmail.com', '1q2w3e', 607889159),
+('jackson', 'dick@gmail.com', 'jessica', 694633281),
+('james', 'charlie@gmail.com', '123456a', 601733248),
+('jason', 'hunter@gmail.com', 'target123', 667670273),
+('jeff', 'frank@gmail.com', 'daniel', 653261644),
+('jeffrey', 'spider@gmail.com', 'monkey1', 679910801),
+('jennifer', 'mickey@gmail.com', '888888', 600620177),
+('jeremy', 'ranger@gmail.com', 'aaaaaa', 607292257),
+('john', 'NULL@gmail.com', '111111', 668946063),
+('johnny', '1234@gmail.com', '1q2w3e4r', 632539880),
+('jordan', 'webmaster@gmail.com', '1234qwer', 697164432),
+('joseph', 'steven@gmail.com', 'gwerty', 680015309),
+('joshua', 'eric@gmail.com', 'love', 638496843),
+('justin', 'edward@gmail.com', 'gwerty123', 631916971),
+('kevin', 'monkey@gmail.com', 'sunshine', 641609052),
+('killer', 'tony@gmail.com', 'abcd1234', 672423657),
+('little', 'brandon@gmail.com', 'baseball', 660159331),
+('mail', 'master@gmail.com', 'myspace1', 624905450),
+('mark', 'thomas@gmail.com', 'iloveyou', 608845902),
+('martin', 'james@gmail.com', '123321', 643111799),
+('master', 'qwerty@gmail.com', '666666', 630104128),
+('matt', 'jeff@gmail.com', '11111', 673444043),
+('matthew', 'scott@gmail.com', 'zag12wsx', 653572513),
+('michael', '2000@gmail.com', 'qwerty', 623513904),
+('mickey', 'freddy@gmail.com', 'asdfgh', 621286055),
+('mike', 'chris@gmail.com', 'password1', 627050809),
+('monkey', 'dennis@gmail.com', 'ashley', 649190849),
+('mustang', 'gary@gmail.com', 'michael', 672019726),
+('natasha', 'joseph@gmail.com', '555555', 662583701),
+('net', 'fred@gmail.com', '88888888', 676132077),
+('NULL', 'michael@gmail.com', 'password', 695386238),
+('patrick', 'charles@gmail.com', '123qwe', 675450296),
+('paul', 'daniel@gmail.com', '123', 683414538),
+('peter', 'bill@gmail.com', 'a123456', 647898273),
+('philip', 'root@gmail.com', 'FQRG7CS493', 627173822),
+('pussy', 'martin@gmail.com', '1qaz2wsx', 608458808),
+('qwerty', 'dragon@gmail.com', '654321', 609316653),
+('ranger', 'fuck@gmail.com', 'football', 625577089),
+('richard', 'dave@gmail.com', '1234567890', 656883789),
+('robert', 'david@gmail.com', 'abc123', 653553865),
+('root', 'little@gmail.com', 'master', 682985274),
+('sales', 'billy@gmail.com', '123654', 689393758),
+('scott', 'alex@gmail.com', 'zxcvbnm', 648904714),
+('scotty', 'jackson@gmail.com', '123456789a', 697515071),
+('sexy', 'matt@gmail.com', 'passer2009', 608849600),
+('shadow', 'patrick@gmail.com', '123abc', 640545591),
+('snoopy', 'buster@gmail.com', 'soccer', 631202772),
+('sparky', 'donald@gmail.com', 'asd123', 600396421),
+('spider', 'jennifer@gmail.com', 'football1', 677951542),
+('steve', '123456@gmail.com', '000000', 609231899),
+('steven', 'tarrant@gmail.com', '222222', 666557181),
+('superman', 'joshua@gmail.com', 'love123', 636192280),
+('tarrant', 'carlos@gmail.com', 'tinkle', 638913021),
+('thomas', 'richard@gmail.com', '123123', 682620724),
+('timothy', 'darren@gmail.com', 'charlie', 629288740),
+('tony', 'sales@gmail.com', '11111111', 633546927),
+('webmaster', 'cameron@gmail.com', '159753', 663458050);
 
 --
 -- Índices para tablas volcadas
 --
 
 --
--- Indices de la tabla `administradores`
+-- Indices de la tabla `facebook`
 --
-ALTER TABLE `administradores`
-  ADD PRIMARY KEY (`id_administrador`);
+ALTER TABLE `facebook`
+  ADD PRIMARY KEY (`usuario`);
 
 --
--- Indices de la tabla `credenciales`
+-- Indices de la tabla `gmail`
 --
-ALTER TABLE `credenciales`
-  ADD PRIMARY KEY (`id_usuario`),
-  ADD KEY `fk_id_filtration` (`id_filtracion`);
+ALTER TABLE `gmail`
+  ADD PRIMARY KEY (`usuario`);
 
 --
--- Indices de la tabla `filtraciones`
+-- Indices de la tabla `hotmail`
 --
-ALTER TABLE `filtraciones`
-  ADD PRIMARY KEY (`id_filtracion`);
+ALTER TABLE `hotmail`
+  ADD PRIMARY KEY (`usuario`);
 
 --
--- Indices de la tabla `historial`
+-- Indices de la tabla `instagram`
 --
-ALTER TABLE `historial`
-  ADD PRIMARY KEY (`id_historial`),
-  ADD KEY `fk_id_administrador` (`id_administrador`);
+ALTER TABLE `instagram`
+  ADD PRIMARY KEY (`usuario`);
 
 --
--- AUTO_INCREMENT de las tablas volcadas
+-- Indices de la tabla `pornhub`
 --
+ALTER TABLE `pornhub`
+  ADD PRIMARY KEY (`usuario`);
 
 --
--- AUTO_INCREMENT de la tabla `credenciales`
+-- Indices de la tabla `twitter`
 --
-ALTER TABLE `credenciales`
-  MODIFY `id_usuario` int(6) NOT NULL AUTO_INCREMENT;
-
---
--- AUTO_INCREMENT de la tabla `historial`
---
-ALTER TABLE `historial`
-  MODIFY `id_historial` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=11;
-
---
--- Restricciones para tablas volcadas
---
-
---
--- Filtros para la tabla `credenciales`
---
-ALTER TABLE `credenciales`
-  ADD CONSTRAINT `fk_id_filtracion` FOREIGN KEY (`id_filtracion`) REFERENCES `filtraciones` (`id_filtracion`) ON DELETE CASCADE;
-
---
--- Filtros para la tabla `historial`
---
-ALTER TABLE `historial`
-  ADD CONSTRAINT `fk_id_administrador` FOREIGN KEY (`id_administrador`) REFERENCES `administradores` (`id_administrador`);
+ALTER TABLE `twitter`
+  ADD PRIMARY KEY (`usuario`);
 COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;

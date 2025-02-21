@@ -29,8 +29,7 @@ public class AdministradoresGUI extends GUI implements ActionListener {
     public AdministradoresGUI() {
 
         super();
-
-        this.setTitle(MetodosToSql.getAdminName() + "                🗲｡◕‿‿◕｡ 🗲｡◕‿‿◕｡ 🗲｡◕‿‿◕｡ 🗲｡◕‿‿◕🗲｡◕‿‿◕🗲｡◕‿‿◕🗲｡◕‿‿◕🗲｡◕‿‿◕🗲｡◕‿‿◕ ");
+        this.setTitle("ADMINISTRADORES ｡◕‿‿◕｡ 🗲｡◕‿‿◕｡ 🗲｡◕‿‿◕｡ 🗲｡◕‿‿◕｡ 🗲｡◕‿‿◕｡ 🗲｡◕‿‿◕｡ 🗲｡◕‿‿◕｡ 🗲｡◕‿‿◕｡ 🗲｡◕‿‿◕｡ 🗲｡◕‿‿◕🗲｡◕‿‿◕🗲｡◕‿‿◕🗲｡◕‿‿◕🗲｡◕‿‿◕🗲｡◕‿‿◕ ");
 
         this.setSize(780, 450);
 
@@ -132,8 +131,7 @@ public class AdministradoresGUI extends GUI implements ActionListener {
         //SCROLL
         scroll = new JScrollPane(table);
 
-        scroll.setBounds(0, 250, 780, 400);
-
+        scroll.setBounds(0, 250, 780, 200);
         scroll.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
         scroll.setForeground(Color.yellow);
         layout.add(scroll);
@@ -145,7 +143,6 @@ public class AdministradoresGUI extends GUI implements ActionListener {
 
         Scroll scroll = new Scroll(); //intanciar clase scroll para crear joptionpane de gran tamaño
 
-        //solo permite listar usuarios
         if (e.getSource() == QUERY) {
 
             String queryInput = JOptionPane.showInputDialog("Introduce la query");
@@ -159,7 +156,6 @@ public class AdministradoresGUI extends GUI implements ActionListener {
                 System.out.println("****USUARIOS****");
                 int contador = 0;
                 while (rs.next()) {
-
                     String usuario = rs.getString("usuario");
 
                     us.add(usuario + " \n");

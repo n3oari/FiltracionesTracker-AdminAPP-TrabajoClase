@@ -8,13 +8,11 @@ import java.util.LinkedList;
 import javax.swing.JOptionPane;
 import javax.swing.JScrollPane;
 import javax.swing.table.DefaultTableModel;
-import jdk.nashorn.internal.ir.BreakNode;
 
 public class MetodosToSql {
 
     private static int afectados;
     private static int idAdmin = -1;
-    private static String adminName;
 
     /*---------------------METODOS INDEX----------------------
     0 - SETTETS Y GETTERS ID ADMIN
@@ -28,23 +26,13 @@ public class MetodosToSql {
     8 - QUERY PARA MODIFICAR TABLE + BD (USA EL ID DEL METODO 7)
     ----------------------------------------------------------
      */
-    //0 SETTERS Y GETTERS ID ADMIN / NOMBRE ADMIN
+    //0 SETTERS Y GETTERS ID ADMIN
     public static void setIdAdmin(int id) {
         idAdmin = id;
     }
 
     public static int getIdAdmin() {
         return idAdmin;
-    }
-
-    public static void setAdminName(String name) {
-        adminName = name;
-
-    }
-
-    public static String getAdminName() {
-
-        return adminName;
     }
 
     // 1 -> METODO CREAR UNA CONEXION
@@ -66,9 +54,7 @@ public class MetodosToSql {
     }
 
     // 2 -> METODO PARA GENERAR NUMEROS DE TELEFONO Y AÑADIR A UN LINKEDLIST
-// HE USADO LINKEDLIST EN VEZ DE ARRAYLIST PORQUE EL MAXIMO DE ELEMENTOS EN UN ARRAYLIST ES 100000
-    /*
-          
+    // HE USADO LINKEDLIST EN VEZ DE ARRAYLIST PORQUE EL MAXIMO DE ELEMENTOS EN UN ARRAYLIST ES 100000
     public static LinkedList<Integer> generarNum(int afectados) {
         LinkedList<Integer> listaNums = new LinkedList<>();
         int primerNum = 600000000; // con esto se consigue que el primer número siempre sea un 6
@@ -79,7 +65,7 @@ public class MetodosToSql {
         System.out.println("[+] Números de teléfonos creados correctamente. nº números creados " + afectados);
         return listaNums;
     }
-     */
+
     // 3 -> METODO PARA LEER ARCHIVOS Y METERLOS EN UN LINKEDLIST DE <USUARIO><EMAILS><CONTRASEÑAS>
     public static LinkedList<String> leerArchivo(File archivo, int afectados) throws FileNotFoundException, IOException {
         LinkedList<String> lista = new LinkedList<>();
@@ -102,7 +88,106 @@ public class MetodosToSql {
     }
 
     // 4 -> METODO QUE AÑADE UNA FILTRACION A LA TABLE + BD
+    public static void añadirFiltracion() throws SQLException, IOException {
 
+        DefaultTableModel model = AdministradoresGUI.getModel();
+
+        String queryFiltraciones = "INSERT INTO FILTRACIONES (id_filtracion, plataforma, fecha, numero_afectados, descripcion, medidas) VALUES (?,?,?,?,?,?)";
+        PreparedStatement preparedFiltraciones = establecerConexion().prepareStatement(queryFiltraciones, Statement.RETURN_GENERATED_KEYS);
+
+        String idIntroducido = (JOptionPane.showInputDialog("Introduce un ID"));
+        int id = Integer.parseInt(idIntroducido);
+        String plataforma = JOptionPane.showInputDialog("Introduce nombre plataforma");
+        String fecha = JOptionPane.showInputDialog("Introduce fecha dd/MM/yyyy");
+        DateTimeFormatter dateF = DateTimeFormatter.ofPattern("dd/MM/yyyy");
+        LocalDate locald = LocalDate.parse(fecha, dateF);
+        Date sqlD = Date.valueOf(locald);
+        String rutaUsuario = JOptionPane.showInputDialog("Número de afectados. Necesario introducir la ruta del diccionario de usuarios:");
+        File diccionario = new File(rutaUsuario);
+
+        if (diccionario.exists()) {
+            afectados = MetodosToSql.contarDiccionario(diccionario);
+        } else {
+            JOptionPane.showMessageDialog(null, "El archivo de diccionario no existe. Verifica la ruta.");
+            return;  // Salimos si el archivo no existe
+        }
+        String descripcion = JOptionPane.showInputDialog("Introduce descripción de la filtración");
+        String medidas = JOptionPane.showInputDialog("Introduce las medidas tomadas");
+
+        preparedFiltraciones.setInt(1, id);
+        preparedFiltraciones.setString(2, plataforma);
+        preparedFiltraciones.setDate(3, sqlD);
+        preparedFiltraciones.setInt(4, afectados);
+        preparedFiltraciones.setString(5, descripcion);
+        preparedFiltraciones.setString(6, medidas);
+        preparedFiltraciones.executeUpdate();
+
+        Object[] row = new Object[]{id, plataforma, fecha, afectados, descripcion, medidas};
+        model.addRow(row);
+
+        //AL FINALIZAR DE INSERTAR LA FILTRACION, SE LLAMA AL METODO AÑADIRUSUARIOS
+        //PARA AÑADIR LAS CREDENCIALES A LA FILTRACION
+        //PASANDOLE ID DE LA FILTRACION QUE HEMOS AÑADIDO, EL NUMERO DE AFECTADOS, Y LA TABLEMODEL
+        MetodosToSql.añadirUsuarios(id, afectados);
+
+    }
+
+    // 5 -> METODO PARA CREAR USUARIOS E INSERTARLOS A LA BASE DE DATOS CON UNA QUERY
+    public static void añadirUsuarios(int idGenerado, int afectados) throws SQLException {
+
+     
+        String rutaUsers = JOptionPane.showInputDialog("Introduce ruta diccionario usuarios");
+        String rutaPass = JOptionPane.showInputDialog("Introduce ruta diccionario contraseñas");
+        String rutaEmails = JOptionPane.showInputDialog("Introduce ruta diccionario emails");
+
+        File usuario = new File(rutaUsers);
+        File pass = new File(rutaPass);
+        File correo = new File(rutaEmails);
+
+        String queryUsuarios = "INSERT IGNORE INTO CREDENCIALES (usuario, correo, contraseña, telefono, id_filtracion) VALUES (?,?,?,?,?)";
+        PreparedStatement prepared = establecerConexion().prepareStatement(queryUsuarios);
+
+        LinkedList<String> users = new LinkedList<>();
+        LinkedList<String> emails = new LinkedList<>();
+        LinkedList<String> passwds = new LinkedList<>();
+        LinkedList<Integer> numbersPhone = new LinkedList<>();
+
+        try {
+            users = MetodosToSql.leerArchivo(usuario, afectados);
+            emails = MetodosToSql.leerArchivo(correo, afectados);
+            passwds = MetodosToSql.leerArchivo(pass, afectados);
+            numbersPhone = MetodosToSql.generarNum(afectados);
+
+            System.out.println("Usuarios cargados: " + users.size());
+            System.out.println("Correos cargados: " + emails.size());
+            System.out.println("Contraseñas cargadas: " + passwds.size());
+            System.out.println("Números de teléfono generados: " + numbersPhone.size());
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        int contador = 0;
+        for (int i = 0; i < afectados; i++) {
+            // Aseguramos que las listas tienen suficientes elementos
+            if (i >= users.size() || i >= emails.size() || i >= passwds.size() || i >= numbersPhone.size()) {
+                System.out.println("¡Error! Índice fuera de rango para el archivo.");
+                break; // Detenemos  si no hay suficientes elementos
+            }
+
+            prepared.setString(1, users.get(i));
+            prepared.setString(2, emails.get(i));
+            prepared.setString(3, passwds.get(i));
+            prepared.setInt(4, numbersPhone.get(i));
+            prepared.setInt(5, idGenerado);
+            prepared.executeUpdate();
+
+            contador++;
+
+        }
+
+        JOptionPane.showMessageDialog(null, contador + " usuarios añadidos exitosamente", "Info", JOptionPane.INFORMATION_MESSAGE);
+        System.out.println("[+] Se han añadido los usuarios correctamente.");
+    }
 
     // 6 -> METODO QUE CUENTA LAS LINEAS DE UN ARCHIVO
     public static int contarDiccionario(File diccionario) throws FileNotFoundException, IOException {
@@ -128,7 +213,7 @@ public class MetodosToSql {
 
         try {
             Connection con = establecerConexion();
-            String queryGetId = "SELECT id_administrador,usuario FROM administradores WHERE usuario =? AND contraseña =?";
+            String queryGetId = "SELECT id_administrador FROM administradores WHERE usuario =? AND contraseña =?";
             PreparedStatement pre = con.prepareStatement(queryGetId);
             pre.setString(1, usuarioAdmin);
             pre.setString(2, contraseñaAdmin);
@@ -140,14 +225,12 @@ public class MetodosToSql {
                 JOptionPane.showMessageDialog(null, "[+]Adminitrador verficado exitosamente ");
                 JOptionPane.showMessageDialog(null, ".........entrando como administrador");
                 idAdmin = rs.getInt("id_administrador");
-                adminName = rs.getString("usuario");
                 //  JOptionPane.showMessageDialog(null, "id admin generado " + idAdmin);
-                MetodosToSql.setAdminName(adminName);
                 MetodosToSql.setIdAdmin(idAdmin);
 
+                
                 new AdministradoresGUI();
                 AdministradoresGUI.refreshBD(); //actualiza la tabla
-
             } else {
                 JOptionPane.showMessageDialog(null, "....Usuario o contraseña incorrectos");
             }
