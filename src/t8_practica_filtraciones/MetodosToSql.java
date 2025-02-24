@@ -275,6 +275,8 @@ public class MetodosToSql {
 
         int idAdmin = MetodosToSql.getIdAdmin(); //obtener el id del admin loggeado
         String cambios;
+        
+       
 
         try {
             Connection con = establecerConexion();

@@ -1,14 +1,29 @@
 # Proyecto programación 1ºDAM
+
 ## Buscador de Credenciales y Administración de Apps (CRUD)
 ## Desarrollado en Java, con Base de Datos MariaDB y consultas SQL
+## GitHub repo -> https://github.com/n3oari/FiltracionesTracker-AdminAPP-TrabajoClase
 
 ---
+
+
 
 ### Tablas
 - Credenciales(fk_id_filtracion)
 - Filtraciones
 - Administradores
 - Historial (fk_id_administrador)
+
+---
+
+
+### Hay 3 GUI:
+
+GUI
+│
+├── GUI User
+│
+└── GUI Admin
 
 ---
 
@@ -32,4 +47,5 @@
 
 	-Todas las acciones se ejecutan tanto en la GUI como en la base de datos. (excepto actualizar tabla)
 
-  #### En el repositorio hay un video donde se muestra un resumen de como funciona la app
+
+

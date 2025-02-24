@@ -22,7 +22,7 @@ public class AdministradoresGUI extends GUI implements ActionListener {
     //TABLA
     private JTable table;
     private static DefaultTableModel model;
-    private JScrollPane vertialScroll;
+    private JScrollPane verticalScroll;
     private String[] header;
     private Object[][] data;
 
@@ -125,14 +125,14 @@ public class AdministradoresGUI extends GUI implements ActionListener {
         table.getTableHeader().setReorderingAllowed(false); // desactiva poder mover las columnas
 
         // SCROLL
-        vertialScroll = new JScrollPane(table);
-        vertialScroll.setBounds(0, 250, 780, 300);
-        vertialScroll.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
-        vertialScroll.setForeground(Color.yellow);
+        verticalScroll = new JScrollPane(table);
+        verticalScroll.setBounds(0, 250, 780, 300);
+        verticalScroll.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
+        verticalScroll.setForeground(Color.yellow);
 
-        layout.add(vertialScroll); // Agrega el JScrollPane al layout
+        layout.add(verticalScroll); // Agrega el JScrollPane al layout
 
-        layout.add(vertialScroll);
+        layout.add(verticalScroll);
 
     }
 
@@ -306,9 +306,4 @@ public class AdministradoresGUI extends GUI implements ActionListener {
         }
     }
 
-    public static void main(String[] args) {
-
-        new AdministradoresGUI();
-
-    }
 }
