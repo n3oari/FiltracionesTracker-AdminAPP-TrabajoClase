@@ -17,16 +17,6 @@
 ---
 
 
-### Hay 3 GUI:
-
-GUI
-│
-├── GUI User
-│
-└── GUI Admin
-
----
-
 ### Como usuario la app permite:
 
 	- Buscar si sus credenciales  han sido filtradas en algún ataque de bases de datos conocidas. Solo tienes que 	ingresar tu información y el sistema verificará si ha sido comprometida. 
