@@ -1,29 +1,21 @@
 # Proyecto programación 1ºDAM
 
-## Buscador de Credenciales y Administración de Apps (CRUD)
-## Desarrollado en Java, con Base de Datos MariaDB y consultas SQL
-## GitHub repo -> https://github.com/n3oari/FiltracionesTracker-AdminAPP-TrabajoClase
+<br>
 
----
+## Buscador de Credenciales comprometidas y Administración de App (CRUD)
 
+<br>
 
+> Para ver su funcionamiento clone el proyecto o descarga el video adjuntado en el projecto
 
-### Tablas
-- Credenciales(fk_id_filtracion)
-- Filtraciones
-- Administradores
-- Historial (fk_id_administrador)
-
----
+[![Video projecto](/img/miniatura.png)](PRO_PROYECTO_FILTRACIONES.mp4)
 
 
 ### Como usuario la app permite:
 
-	- Buscar si sus credenciales  han sido filtradas en algún ataque de bases de datos conocidas. Solo tienes que 	ingresar tu información y el sistema verificará si ha sido comprometida. 
+	- Buscar si sus credenciales  han sido filtradas en algún ataque de bases de datos conocidas. Solo tienes que ingresar tu información y el sistema verificará si ha sido comprometida. 
 	- Consultar la suma total de las credenciales actuales en la base de datos
 	- Loggearte como administrador
-
----
 
 ### Como administrador la app permite:
 
@@ -35,7 +27,10 @@
 	- Modificar columna
 	- Consultar historial de modificaciones
 
-	-Todas las acciones se ejecutan tanto en la GUI como en la base de datos. (excepto actualizar tabla)
 
 
 
+
+Use Control + Shift + m to toggle the tab key moving focus. Alternatively, use esc then tab to move to the next interactive element on the page.
+Attach files by dragging & dropping, selecting or pasting them.
+Editing FiltracionesTracker-AdminAPP-TrabajoClase/README.md at main · n3oari/FiltracionesTracker-AdminAPP-TrabajoClase
